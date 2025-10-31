@@ -1,0 +1,62 @@
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f0f0f0;
+  margin: 0;
+}
+
+.app {
+  text-align: center;
+}
+
+/* Main Card Style */
+.card {
+  background: #ffd1dc; /* pastel pink */
+  padding: 2rem;
+  border-radius: 16px; /* rounded credit card corners */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  width: 350px; /* wider than tall */
+  height: 200px; /* short like credit card */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Options container */
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Option buttons as mini cards */
+.options button {
+  width: 100px; /* small credit card shape */
+  height: 60px;
+  padding: 0.5rem;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  background-color: #ffe4e9; /* lighter pastel pink */
+  color: #333;
+  font-weight: bold;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.options button:hover {
+  background-color: #ffc0cb; /* slightly darker pink on hover */
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
