@@ -1,6 +1,10 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-const initialState = {
+export interface MoodState {
+  mood: string | null;
+}
+
+const initialState: MoodState = {
   mood: null,
 };
 
@@ -8,7 +12,7 @@ const moodSlice = createSlice({
   name: 'mood',
   initialState,
   reducers: {
-    setMood(state, action) {
+    setMood(state, action: PayloadAction<string>) {
       state.mood = action.payload;
     },
     clearMood(state) {
@@ -16,6 +20,7 @@ const moodSlice = createSlice({
     },
   },
 });
+
 
 export const { setMood, clearMood } = moodSlice.actions;
 
