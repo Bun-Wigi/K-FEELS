@@ -1,17 +1,20 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type FormEvent, type ChangeEvent, type MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authenticateUser } from '../features/authentication/authSlice'; 
 
+
+import { useAppSelector, useAppDispatch } from '../hooks/hooks';
+
 function Auth() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch(); 
   const navigate = useNavigate();
   
-  const { isAuthenticated, status, error } = useSelector((state) => state.auth);
+  const { isAuthenticated, status, error } = useAppSelector((state) => state.auth);
 
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [mode, setMode] = useState('login'); 
+  const [mode, setMode] = useState<'login' | 'register'>('login'); 
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -19,12 +22,22 @@ function Auth() {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+   
     dispatch(authenticateUser({ email, password, mode }));
   };
 
-  const handleModeChange = () => {
+
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+  const handleModeChange = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     setMode(mode === 'login' ? 'register' : 'login');
     setEmail('');
     setPassword('');
@@ -40,7 +53,7 @@ function Auth() {
           type="email"
           placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={handleEmailChange}
           required
           disabled={isLoading}
         />
@@ -48,7 +61,7 @@ function Auth() {
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={handlePasswordChange}
           required
           disabled={isLoading}
         />

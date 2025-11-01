@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 
 
+
 export interface User {
   id: string;
   email: string;
@@ -18,6 +19,16 @@ export interface AuthState {
 interface AuthFulfilledPayload {
   user: User;
   token: string;
+}
+
+declare global {
+  interface ImportMetaEnv {
+    readonly VITE_API_BASE_URL: string;
+  }
+
+  interface ImportMeta {
+    readonly env: ImportMetaEnv;
+  }
 }
 
 interface AuthThunkArgs {
