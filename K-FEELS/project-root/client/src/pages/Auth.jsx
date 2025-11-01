@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authenticateUser } from './features/authentication/authSlice'; 
+import { authenticateUser } from '../features/authentication/authSlice'; 
 
 function Auth() {
   const dispatch = useDispatch();

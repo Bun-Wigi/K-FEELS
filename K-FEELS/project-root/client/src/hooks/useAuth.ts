@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 
 
+
 export interface User {
   id: string;
   email: string;
@@ -20,6 +21,16 @@ interface AuthFulfilledPayload {
   token: string;
 }
 
+declare global {
+  interface ImportMetaEnv {
+    readonly VITE_API_BASE_URL: string;
+  }
+
+  interface ImportMeta {
+    readonly env: ImportMetaEnv;
+  }
+}
+
 interface AuthThunkArgs {
   email: string;
   password: string;
@@ -30,9 +41,7 @@ interface ThunkApiConfig {
     rejectValue: string; 
 }
 
-// ----------------------------------------------------------------------
-// 2. INITIAL STATE
-// ----------------------------------------------------------------------
+
 
 const storedUser: User | null = JSON.parse(localStorage.getItem('user') || 'null');
 const storedToken: string | null = localStorage.getItem('token');
@@ -47,9 +56,6 @@ const initialState: AuthState = {
 };
 
 
-// ----------------------------------------------------------------------
-// 3. ASYNC THUNK (The function arguments are now correctly typed)
-// ----------------------------------------------------------------------
 
 export const authenticateUser = createAsyncThunk<
   AuthFulfilledPayload, 
@@ -86,10 +92,6 @@ export const authenticateUser = createAsyncThunk<
   }
 );
 
-
-// ----------------------------------------------------------------------
-// 4. SLICE DEFINITION
-// ----------------------------------------------------------------------
 
 const authSlice = createSlice({
   name: 'auth',
