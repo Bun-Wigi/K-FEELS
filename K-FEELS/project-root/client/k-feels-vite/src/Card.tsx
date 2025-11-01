@@ -1,63 +1,91 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface CardProps {
+  step: number;
   title: string;
   options: string[];
   onSelect: (choice: string) => void;
-  step: number;
 }
 
-const Card: React.FC<CardProps> = ({ title, options, onSelect, step }) => {
+const Card: React.FC<CardProps> = ({ step, title, options, onSelect }) => {
+  // State for sparkle burst
+  const [sparkles, setSparkles] = useState<{ id: number; angle: number }[]>([]);
+  // State for expansion animation
+  const [expanded, setExpanded] = useState(false);
+
+  // Animation presets for when card appears/disappears
+  const cardVariants = {
+    initial: { scale: 0.9, opacity: 0, y: 40 },
+    animate: { scale: 1, opacity: 1, y: 0, transition: { duration: 0.4 } },
+    exit: { scale: 0.8, opacity: 0, y: -40, transition: { duration: 0.3 } },
+  };
+
+  // Sparkle burst + card pop when user clicks
+  const triggerBurst = () => {
+    const newSparkles = Array.from({ length: 12 }).map((_, i) => ({
+      id: Date.now() + i,
+      angle: (i / 12) * 360, // evenly distributed around circle
+    }));
+    setSparkles(newSparkles);
+
+    // Clear sparkles after 1 second
+    setTimeout(() => setSparkles([]), 1000);
+
+    // Expand card briefly
+    setExpanded(true);
+    setTimeout(() => setExpanded(false), 250);
+  };
+
+  // Handle user selection
+  const handleSelect = (choice: string) => {
+    triggerBurst();
+    // Delay advancing to next card slightly to sync with animation
+    setTimeout(() => onSelect(choice), 250);
+  };
+
   return (
-    <motion.div
-      className="card"
-      layout
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.8 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-    >
-      <h2>{title}</h2>
-      <div className="options">
-        {options.map((option, index) => (
-          <motion.button
-            key={option}
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{
-              delay: index * 0.12, // staggered pop
-              type: "spring",
-              stiffness: 400,
-              damping: 20,
-            }}
-            whileHover={{
-              scale: 1.08,
-              backgroundColor: "#ffb6c1",
-              boxShadow: "0 0 20px rgba(255, 182, 193, 0.6)",
-            }}
-            whileTap={{ scale: 0.95 }}
-            onClick={(e) => {
-              onSelect(option);
-              // subtle card bounce on click
-              const cardEl = e.currentTarget.closest(".card");
-              if (cardEl) {
-                cardEl.animate(
-                  [
-                    { transform: "scale(1)" },
-                    { transform: "scale(1.03)" },
-                    { transform: "scale(1)" },
-                  ],
-                  { duration: 150, easing: "ease-out" }
-                );
-              }
-            }}
-          >
-            {option}
-          </motion.button>
-        ))}
-      </div>
-    </motion.div>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={step}
+        className={`card ${expanded ? "card-expand" : ""}`}
+        variants={cardVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+      >
+        {/* Sparkles overlay */}
+        <div className="sparkle-container">
+          {sparkles.map((s) => (
+            <div
+              key={s.id}
+              className="sparkle"
+              style={{
+                transform: `rotate(${s.angle}deg) translateY(-80px)`,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Card Title */}
+        <h2>{title}</h2>
+
+        {/* Option Buttons */}
+        <div className="options">
+          {options.map((option) => (
+            <motion.button
+              key={option}
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.1 }}
+              onClick={() => handleSelect(option)}
+            >
+              {option}
+            </motion.button>
+          ))}
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

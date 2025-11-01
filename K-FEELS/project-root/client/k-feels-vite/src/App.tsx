@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import Card from "./Card";
 import "./styles.css";
 
+// Define the quiz flow
 const allSteps = {
   Mood: {
     title: "Choose your mood",
@@ -14,6 +15,7 @@ const allSteps = {
   },
 };
 
+// First selection screen
 const firstOptions = ["Mood", "Character", "Random"];
 
 const App: React.FC = () => {
@@ -21,61 +23,54 @@ const App: React.FC = () => {
   const [stepOrder, setStepOrder] = useState<string[]>([]);
   const [answers, setAnswers] = useState<string[]>([]);
 
+  // Handle user choice
   const handleSelect = (choice: string) => {
     let nextStep = choice;
 
     if (currentStep === 0) {
-      if (choice === "Random") {
+      // If Random is chosen, randomly pick a path
+      if (choice === "Random")
         nextStep = Math.random() < 0.5 ? "Mood" : "Character";
-      }
+
       setStepOrder([nextStep]);
       setCurrentStep(1);
     } else {
+      // Store answer and move to next step
       setAnswers([...answers, choice]);
       setCurrentStep(currentStep + 1);
     }
   };
 
+  // Determine which card to show
   const getCurrentCard = () => {
-    if (currentStep === 0) {
+    if (currentStep === 0)
       return { title: "Choose your destiny", options: firstOptions };
-    }
     const stepKey = stepOrder[currentStep - 1];
     return allSteps[stepKey as keyof typeof allSteps];
   };
 
   return (
-    <motion.div
-      className="app"
-      animate={{
-        backgroundColor: answers.includes("Happy 😊")
-          ? "#ffe6f0"
-          : answers.includes("Sad 😢")
-          ? "#d0e0f5"
-          : "#fff0f5",
-      }}
-      transition={{ duration: 0.8 }}
-    >
+    <motion.div className="app">
       <h1 className="title">K-Feels</h1>
-
       <div className="card-stack">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentStep}
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: [1.2, 0.95, 1], opacity: 1 }}
-            exit={{ scale: 0.6, opacity: 0 }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
-            layout
-          >
-            <Card
-              step={currentStep + 1}
-              title={getCurrentCard().title}
-              options={getCurrentCard().options}
-              onSelect={handleSelect}
+        {/* Decorative back cards */}
+        {currentStep < 1 && (
+          <>
+            <motion.div
+              className="card-back"
+              style={{ top: 10, scale: 0.95 }}
             />
-          </motion.div>
-        </AnimatePresence>
+            <motion.div className="card-back" style={{ top: 20, scale: 0.9 }} />
+          </>
+        )}
+
+        {/* Active quiz card */}
+        <Card
+          step={currentStep + 1}
+          title={getCurrentCard().title}
+          options={getCurrentCard().options}
+          onSelect={handleSelect}
+        />
       </div>
     </motion.div>
   );
