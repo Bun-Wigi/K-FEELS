@@ -1,13 +1,16 @@
 import React, { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import Card from "./Card";
-import { AnimatePresence } from "framer-motion";
 import "./styles.css";
 
 const allSteps = {
-  Mood: { title: "Choose your mood", options: ["Happy", "Sad", "Excited"] },
+  Mood: {
+    title: "Choose your mood",
+    options: ["Happy 😊", "Sad 😢", "Excited 🤩"],
+  },
   Character: {
     title: "Choose a character",
-    options: ["Hero", "Villain", "Sidekick"],
+    options: ["Hero 🦸‍♂️", "Villain 🦹‍♀️", "Sidekick 🧙‍♂️"],
   },
 };
 
@@ -22,14 +25,12 @@ const App: React.FC = () => {
     let nextStep = choice;
 
     if (currentStep === 0) {
-      // First card logic
       if (choice === "Random") {
         nextStep = Math.random() < 0.5 ? "Mood" : "Character";
       }
       setStepOrder([nextStep]);
       setCurrentStep(1);
     } else {
-      // Subsequent card
       setAnswers([...answers, choice]);
       setCurrentStep(currentStep + 1);
     }
@@ -44,18 +45,39 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="app">
-      <h1>K-Feels</h1>
-      <AnimatePresence mode="wait">
-        <Card
-          key={currentStep}
-          step={currentStep + 1}
-          title={getCurrentCard().title}
-          options={getCurrentCard().options}
-          onSelect={handleSelect}
-        />
-      </AnimatePresence>
-    </div>
+    <motion.div
+      className="app"
+      animate={{
+        backgroundColor: answers.includes("Happy 😊")
+          ? "#ffe6f0"
+          : answers.includes("Sad 😢")
+          ? "#d0e0f5"
+          : "#fff0f5",
+      }}
+      transition={{ duration: 0.8 }}
+    >
+      <h1 className="title">K-Feels</h1>
+
+      <div className="card-stack">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentStep}
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: [1.2, 0.95, 1], opacity: 1 }}
+            exit={{ scale: 0.6, opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            layout
+          >
+            <Card
+              step={currentStep + 1}
+              title={getCurrentCard().title}
+              options={getCurrentCard().options}
+              onSelect={handleSelect}
+            />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </motion.div>
   );
 };
 
