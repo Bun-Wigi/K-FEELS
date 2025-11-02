@@ -1,6 +1,8 @@
 // src/main.tsx
 import React from "react";
 import { createRoot } from "react-dom/client";
+import { Provider } from 'react-redux';
+import { store } from "./store";
 import App from "./App";
 import "./styles.css";
 
@@ -14,6 +16,9 @@ const root = createRoot(container);
 // Render the app
 root.render(
   <React.StrictMode>
-    <App />
+    {/* 3. Wrap the App component with the Provider and pass the store */}
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>
 );

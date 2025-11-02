@@ -1,0 +1,122 @@
+/* --- LAYOUT AND NAVIGATION STYLES --- */
+
+/* App Container */
+.app-layout {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Nav Bar Styles */
+.header-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  height: 4rem; 
+  /* CHANGE: Transparent background */
+  background-color: transparent;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Lighter shadow for transparent nav */
+  padding: 0.5rem 2rem;
+  margin-bottom: 5rem;
+}
+
+.header-container {
+    max-width: 1200px; 
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 1.5rem; 
+}
+
+.header-content {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    height: 100%;
+    flex-wrap: wrap; 
+}
+
+.header-brand-wrapper {
+    flex-shrink: 0;
+    /* CHANGE: Background wrapper for the brand name */
+    background-color: #8c86aa; /* Darker than lilac, soft purple-gray */
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Authentication Section */
+.header-auth-links {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-greeting {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.user-name {
+    font-weight: 600;
+    color: #ffc0cb; /* Pink color for the username */
+}
+
+/* Button Overrides */
+.btn-login,
+.btn-logout {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.5em 1em;
+    font-size: 0.9rem;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.25s;
+    line-height: 1.2;
+}
+
+.btn-login, .btn-logout {
+    background-color: #d6c1ff;
+    color: #ff4f85;
+    border-color: #b680e9;
+    box-shadow: 0 5px 0 rgba(147, 112, 219, 0.5);
+}
+
+.btn-login:active, .btn-logout:active {
+    box-shadow: 0 0 0 rgba(147, 112, 219, 0.5);
+}
+
+.btn-login:hover, .btn-logout:hover {
+    background-color: #cda0f4; /* Darker on hover */
+    border-color: #b680e9;
+}
+
+.btn-login:disabled,
+.btn-logout:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 600px) {
+    .header-content {
+        justify-content: center;
+        gap: 1rem;
+    }
+    .header-brand-wrapper {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+    .header-auth-links {
+        width: 100%;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+    .user-greeting {
+        display: none; 
+    }
+}

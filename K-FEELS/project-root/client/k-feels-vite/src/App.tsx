@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import Header from "./NavBar";
 import Card from "./Card";
 import "./styles.css";
+import "./navbar.css";
+
 
 // Define the quiz flow
 const allSteps = {
@@ -50,16 +53,17 @@ const App: React.FC = () => {
   };
 
   return (
-    <motion.div className="app">
-      <h1 className="title">K-Feels</h1>
-      <div className="card-stack">
+    <>
+      <Header />
+      <motion.div className="app">
+        <h1 className="title">K-Feels</h1>
+        <div className="card-stack">
         {/* Decorative back cards */}
         {currentStep < 1 && (
           <>
             <motion.div
               className="card-back"
-              style={{ top: 10, scale: 0.95 }}
-            />
+              style={{ top: 10, scale: 0.95 }} />
             <motion.div className="card-back" style={{ top: 20, scale: 0.9 }} />
           </>
         )}
@@ -69,10 +73,9 @@ const App: React.FC = () => {
           step={currentStep + 1}
           title={getCurrentCard().title}
           options={getCurrentCard().options}
-          onSelect={handleSelect}
-        />
+          onSelect={handleSelect} />
       </div>
-    </motion.div>
+    </motion.div></>
   );
 };
 
