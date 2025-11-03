@@ -1,40 +1,53 @@
-import React, { useState } from 'react';
+import { useState } from "react";
+import ProgressBar from "../components/ProgressBar";
+import { questionCharacter } from "../data/questions_char";
+import { questionsMood } from "../data/questions_mood";
+import { useNavigate, useParams } from "react-router-dom";
+import QuestionCard from "../components/QuestionCard";
 
-const Quiz = () => {
-    const [mood, setMood] = useState('');
-    const [submitted, setSubmitted] = useState(false);
+export default function Quiz() {
+  //get mode parameters from url
+  const { mode = "mood" } = useParams();
 
-    const handleMoodChange = (event) => {
-        setMood(event.target.value);
-    };
+  //choose wich set of quesions to use based on mode
+  const questions = mode === "character" ? questionCharacter : questionsMood;
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        setSubmitted(true);
-        // Here you would typically dispatch an action to save the mood
-    };
+  //keep track og wich question index is currentry shown
+  const [current, setCurrent] = useState(0);
 
-    return (
-        <div>
-            <h1>Mood Quiz</h1>
-            {submitted ? (
-                <p>Your mood has been recorded: {mood}</p>
-            ) : (
-                <form onSubmit={handleSubmit}>
-                    <label>
-                        How are you feeling?
-                        <input
-                            type="text"
-                            value={mood}
-                            onChange={handleMoodChange}
-                            required
-                        />
-                    </label>
-                    <button type="submit">Submit</button>
-                </form>
-            )}
-        </div>
-    );
-};
+  //keep track of all user's selected answers (arr of tags)
+  const [tagFromAnsw, setTagFromAnsw] = useState([]);
 
-export default Quiz;
+  //reacy hook to navigate between pages
+  const navigate = useNavigate();
+
+  //fn runs every time user selects answ
+  const handleAnswer = (tag) => {
+    //add new answ tag to the arr, tagFromAnsw-prev answ, tag-current
+    const next = [...tagFromAnsw, tag];
+    setTagFromAnsw(next);
+
+    //check if this is the lst quest
+    const isLast = current === questions.length - 1;
+
+    //if so go to the result page
+    if (isLast) {
+      //pass mode and all tags from answers using navigate state
+      navigate("/results", { state: { mode, tagFromAnsw: next } });
+    } else {
+      setCurrent((c) => c + 1); // to the next question
+    }
+  };
+
+  //get current question obj to display
+  const question = questions[current];
+
+  return (
+    <div className="quiz-page">
+      {/* Progress bar showing how far the user is */}
+      <ProgressBar progress={current / questions.length} />
+      {/* Question card — shows question text and options */}
+      <QuestionCard question={question} onAnswer={handleAnswer} />
+    </div>
+  );
+}
