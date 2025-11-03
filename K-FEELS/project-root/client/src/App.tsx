@@ -1,26 +1,20 @@
-import React from "react";
-import Card from "./components/Card";
-import DramaGrid from "./components/DramaGrid";
+// src/App.tsx
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Home from "./pages/Home";
+import Quiz from "./pages/Quiz";
+import Results from "./pages/Results";
 
-function App() {
+export default function App() {
   return (
-    <div
-      style={{
-        maxWidth: 960,
-        margin: "0 auto",
-        padding: 24,
-      }}
-    >
-      <h1>K-Feels</h1>
-
-      <div style={{ display: "flex", gap: 16, marginBottom: 32 }}>
-        <Card title="By mood" />
-        <Card title="By Character" />
-        <Card title="Random" />
+    <BrowserRouter>
+      <div style={{ maxWidth: 960, margin: "0 auto", padding: 24 }}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/quiz/:mode" element={<Quiz />} />
+          <Route path="/results" element={<Results />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </div>
-      <DramaGrid />
-    </div>
+    </BrowserRouter>
   );
 }
-
-export default App;

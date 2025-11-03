@@ -1,25 +1,37 @@
-import React from "react";
+// src/pages/Home.tsx
+import { useNavigate } from "react-router-dom";
+import AnimatedCard from "../components/AnimatedCard";
+import dramas from "../data/drama.json";
+import "../index.css";
 
-const Favorites = () => {
-  // Sample favorite moods data
-  const favoriteMoods = [
-    { id: 1, mood: "Happy" },
-    { id: 2, mood: "Relaxed" },
-    { id: 3, mood: "Excited" },
+export default function Home() {
+  const navigate = useNavigate();
+
+  const options = [
+    { label: "By mood", value: "mood" },
+    { label: "By character", value: "character" },
+    { label: "Random movie", value: "random" },
   ];
 
+  const onSelect = (value) => {
+    if (value === "mood") return navigate("/quiz/mood");
+    if (value === "character") return navigate("/quiz/character");
+    if (value === "random") {
+      const pick = dramas[Math.floor(Math.random() * dramas.length)];
+      return navigate("/results", { state: { mode: "random", picks: [pick] } });
+    }
+  };
+
   return (
-    <div>
-      <h1>Your Favorite Moods</h1>
-      <ul>
-        {favoriteMoods.map((favorite) => (
-          <li key={favorite.id}>{favorite.mood}</li>
-        ))}
-      </ul>
+    <div style={{ maxWidth: 960, margin: "0 auto", padding: 24 }}>
+      <div style={{ marginTop: 24 }}>
+        <AnimatedCard
+          step={1}
+          title="Choose how to get a drama"
+          options={options}
+          onSelect={onSelect}
+        />
+      </div>
     </div>
   );
-};
-
-export default Favorites;
-
-//<Card title="By Mood" onClick={() => navigate("/quiz?type=mood")} />
+}
