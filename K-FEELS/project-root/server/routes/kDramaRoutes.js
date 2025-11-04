@@ -9,4 +9,6 @@ const router = express.Router();
 // GET /api/kdramas
 router.get("/", getKoreanDramas);
 
+router.get("/search", searchKdramas);
+
 export default router;
