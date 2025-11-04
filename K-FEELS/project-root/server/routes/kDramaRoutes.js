@@ -1,5 +1,8 @@
 import express from "express";
-import { getKoreanDramas } from "../controllers/kDramaController.js";
+import {
+  getKoreanDramas,
+  searchKdramas,
+} from "../controllers/kDramaController.js";
 
 const router = express.Router();
 
