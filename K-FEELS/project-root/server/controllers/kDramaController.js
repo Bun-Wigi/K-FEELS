@@ -18,7 +18,8 @@ export const getKoreanDramas = async (req, res) => {
     const url =
       "https://api.themoviedb.org/3/tv/popular?language=ko-KR&region=KR&page=1";
     const data = await fetchFromTMDB(url);
-    res.status(200).json(data);
+    const top10Dramas = data.results.slice(0, 10); // Return top 10 popular K-dramas
+    res.status(200).json(top10Dramas);
   } catch (error) {
     console.error("Error fetching K-dramas:", error.message);
     res
