@@ -1,7 +1,7 @@
-const Mood = require('../models/Mood');
+import Mood from '../models/Mood.js';
 
 // Get all moods
-exports.getAllMoods = async (req, res) => {
+export const getMoods = async (req, res) => {
     try {
         const moods = await Mood.find();
         res.status(200).json(moods);
@@ -10,8 +10,19 @@ exports.getAllMoods = async (req, res) => {
     }
 };
 
+// Get a single mood by ID
+export const getMoodById = async (req, res) => {
+    try {
+        const mood = await Mood.findById(req.params.id);
+        if (!mood) return res.status(404).json({ message: 'Mood not found' });
+        res.status(200).json(mood);
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving mood', error });
+    }
+};
+
 // Create a new mood
-exports.createMood = async (req, res) => {
+export const createMood = async (req, res) => {
     const newMood = new Mood(req.body);
     try {
         const savedMood = await newMood.save();
@@ -22,7 +33,7 @@ exports.createMood = async (req, res) => {
 };
 
 // Update a mood
-exports.updateMood = async (req, res) => {
+export const updateMood = async (req, res) => {
     try {
         const updatedMood = await Mood.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedMood) {
@@ -35,7 +46,7 @@ exports.updateMood = async (req, res) => {
 };
 
 // Delete a mood
-exports.deleteMood = async (req, res) => {
+export const deleteMood = async (req, res) => {
     try {
         const deletedMood = await Mood.findByIdAndDelete(req.params.id);
         if (!deletedMood) {

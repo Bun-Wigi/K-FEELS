@@ -1,4 +1,6 @@
-const express = require('express');
+import express from 'express';
+import { getMoods, createMood, getMoodById, updateMood, deleteMood } from '../controllers/moodController.js';
+
 const router = express.Router();
 const moodController = require('../controllers/moodController');
 const authController = require('../controllers/authController');
@@ -11,4 +13,4 @@ router.put('/moods/:id', moodController.updateMood);
 router.delete('/moods/:id', moodController.deleteMood);
 router.post('/login', authController.login);
 
-module.exports = router;
+export default router;

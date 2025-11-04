@@ -2,11 +2,14 @@
   "name": "mood-quiz-app",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "dev": "vite",
+    "preview": "vite preview"
   },
   "dependencies": {
     "framer-motion": "^12.23.24",
