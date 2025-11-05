@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import Navbar from './Navbar';
 import Card from "./Card";
 import "./styles.css";
 
@@ -51,6 +52,7 @@ const App: React.FC = () => {
 
   return (
     <motion.div className="app">
+      <Navbar />
       <h1 className="title">K-Feels</h1>
       <div className="card-stack">
         {/* Decorative back cards */}

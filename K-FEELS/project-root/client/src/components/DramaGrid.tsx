@@ -15,13 +15,22 @@ export default function DramaGrid({ dramas }: DramaGridProps) {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
         gap: "16px",
-        padding: "20px",
+        maxWidth: 960,
+        margin: "0 auto",
       }}
     >
-      {dramas.map((drama) => (
-        <DramaCard key={drama.id} {...drama} />
+      {dramas.map((d) => (
+        <DramaCard
+          key={d.id}
+          id={d.id}
+          title={d.title}
+          year={d.year}
+          image={d.image} // если вдруг есть
+          poster={d.poster} // если вдруг есть полный URL
+          poster_path={d.poster_path}
+        />
       ))}
     </div>
   );

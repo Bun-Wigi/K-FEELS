@@ -7,6 +7,9 @@ import bodyParser from "body-parser";
 //const routes = require('./routes/index');
 import router from "./routes/index.js";
 import kDramaRouter from "./routes/kDramaRoutes.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5172;

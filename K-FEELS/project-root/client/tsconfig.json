@@ -22,5 +22,5 @@
   },
   "include": [
     "src"
-  ]
+, "k-feels-vite/src/Navbar.tsx", "k-feels-vite/src/Auth.tsx", "k-feels-vite/src/features", "k-feels-vite/src/store.ts", "hooks"  ]
 }
