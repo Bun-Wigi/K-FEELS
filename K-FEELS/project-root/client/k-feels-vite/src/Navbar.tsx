@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
-import { logout } from '../src/features/authSlice';
+import { logout } from './features/authSlice';
 import './navbar.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,10 +20,26 @@ const NavBar: React.FC = () => {
         navigate('/auth'); 
     };
 
+    const handleHomeClick = () => {
+        navigate('/');
+    };
+
     return (
         <nav className="header-nav">
             <div className="header-container">
                 <div className="header-content">
+                    {/* Home button/logo on the left */}
+                    <div className="header-logo">
+                        <button 
+                            onClick={handleHomeClick}
+                            className="btn-home"
+                            aria-label="Go to home"
+                        >
+                            Home
+                        </button>
+                    </div>
+
+                    {/* Auth links on the right */}
                     <div className="header-auth-links">
                         {isAuthenticated && user ? (
                             <>
