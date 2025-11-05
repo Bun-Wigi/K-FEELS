@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import Navbar from './Navbar';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import NavBar from "./Navbar";
 import Card from "./Card";
+import Results from "./Results";
+import Auth from "./Auth";
+import { useAppDispatch } from '../../hooks/hooks';
+import { searchKDramas, fetchPopularKDramas } from './features/tmdbSlice';
 import "./styles.css";
 
 // Define the quiz flow
@@ -19,30 +24,69 @@ const allSteps = {
 // First selection screen
 const firstOptions = ["Mood", "Character", "Random"];
 
-const App: React.FC = () => {
+const QuizFlow: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [currentStep, setCurrentStep] = useState(0);
   const [stepOrder, setStepOrder] = useState<string[]>([]);
   const [answers, setAnswers] = useState<string[]>([]);
+  const [showResults, setShowResults] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Map mood and character combinations to search queries
+  const getSearchQuery = (answers: string[]) => {
+    const mood = answers.find(a => ["Happy 😊", "Sad 😢", "Excited 🤩"].includes(a));
+    const character = answers.find(a => ["Hero 🦸‍♂️", "Villain 🦹‍♀️", "Sidekick 🧙‍♂️"].includes(a));
+
+    if (mood === "Happy 😊" && character === "Hero 🦸‍♂️") {
+      return "romantic comedy korean drama";
+    } else if (mood === "Sad 😢") {
+      return "melodrama korean drama";
+    } else if (mood === "Excited 🤩" || character === "Villain 🦹‍♀️") {
+      return "action thriller korean drama";
+    } else if (character === "Sidekick 🧙‍♂️") {
+      return "friendship comedy korean drama";
+    }
+    
+    return "popular korean drama";
+  };
 
   // Handle user choice
   const handleSelect = (choice: string) => {
     let nextStep = choice;
 
     if (currentStep === 0) {
-      // If Random is chosen, randomly pick a path
-      if (choice === "Random")
+      if (choice === "Random") {
         nextStep = Math.random() < 0.5 ? "Mood" : "Character";
+        dispatch(fetchPopularKDramas());
+        setShowResults(true);
+        return;
+      }
 
       setStepOrder([nextStep]);
       setCurrentStep(1);
     } else {
-      // Store answer and move to next step
-      setAnswers([...answers, choice]);
-      setCurrentStep(currentStep + 1);
+      const newAnswers = [...answers, choice];
+      setAnswers(newAnswers);
+      
+      if (currentStep >= stepOrder.length) {
+        const query = getSearchQuery(newAnswers);
+        setSearchQuery(query);
+        dispatch(searchKDramas(query));
+        setShowResults(true);
+      } else {
+        setCurrentStep(currentStep + 1);
+      }
     }
   };
 
-  // Determine which card to show
+  const resetQuiz = () => {
+    setCurrentStep(0);
+    setStepOrder([]);
+    setAnswers([]);
+    setShowResults(false);
+    setSearchQuery('');
+  };
+
   const getCurrentCard = () => {
     if (currentStep === 0)
       return { title: "Choose your destiny", options: firstOptions };
@@ -50,23 +94,36 @@ const App: React.FC = () => {
     return allSteps[stepKey as keyof typeof allSteps];
   };
 
+  if (showResults) {
+    return (
+      <motion.div className="app">
+        <div className="results-container">
+          <h1 className="title">Your K-Drama Recommendations</h1>
+          
+          <div className="quiz-summary">
+            <p>Based on your choices: {answers.join(', ')}</p>
+            <button onClick={resetQuiz} className="reset-btn">
+              Take Quiz Again
+            </button>
+          </div>
+          
+          <Results searchQuery={searchQuery} loadPopular={!searchQuery} />
+        </div>
+      </motion.div>
+    );
+  }
+
   return (
     <motion.div className="app">
-      <Navbar />
       <h1 className="title">K-Feels</h1>
       <div className="card-stack">
-        {/* Decorative back cards */}
         {currentStep < 1 && (
           <>
-            <motion.div
-              className="card-back"
-              style={{ top: 10, scale: 0.95 }}
-            />
+            <motion.div className="card-back" style={{ top: 10, scale: 0.95 }} />
             <motion.div className="card-back" style={{ top: 20, scale: 0.9 }} />
           </>
         )}
 
-        {/* Active quiz card */}
         <Card
           step={currentStep + 1}
           title={getCurrentCard().title}
@@ -75,6 +132,26 @@ const App: React.FC = () => {
         />
       </div>
     </motion.div>
+  );
+};
+
+const App: React.FC = () => {
+  // Workaround for TypeScript/react type mismatch: cast the router components to any
+  const RoutesComp: any = Routes;
+  const RouteComp: any = Route;
+
+  return (
+    <Router>
+      <div>
+        <NavBar />
+        <main className="main-content">
+          <RoutesComp>
+            <RouteComp path="/" element={<QuizFlow />} />
+            <RouteComp path="/auth" element={<Auth />} />
+          </RoutesComp>
+        </main>
+      </div>
+    </Router>
   );
 };
 
