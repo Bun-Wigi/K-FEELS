@@ -1,34 +1,36 @@
 //display a grid cards on the result page. shows 6 cards with poster, title, year. clicking a card could open details or add it to favorite
-import React from "react";
+
 import DramaCard from "./DramaCard";
+import type { Drama } from "../types";
 
-export default function DramaGrid() {
-  const dramas = [
-    {
-      id: 1,
-      title: "Crash landing on you",
-      image: "/image/crash.jpg",
-      tags: ["romantic", "drama"],
-    },
-    {
-      id: 2,
-      title: "Business Proposal",
-      image: "images/business.ipg",
-      tags: ["romcom"],
-    },
-  ];
+interface DramaGridProps {
+  dramas: Drama[];
+}
 
+export default function DramaGrid({ dramas }: DramaGridProps) {
+  if (!dramas || dramas.length === 0) {
+    return <p>not found</p>;
+  }
   return (
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
         gap: "16px",
-        padding: "20px",
+        maxWidth: 960,
+        margin: "0 auto",
       }}
     >
-      {dramas.map((drama, i) => (
-        <DramaCard key={i} {...drama} />
+      {dramas.map((d) => (
+        <DramaCard
+          key={d.id}
+          id={d.id}
+          title={d.title}
+          year={d.year}
+          image={d.image} // если вдруг есть
+          poster={d.poster} // если вдруг есть полный URL
+          poster_path={d.poster_path}
+        />
       ))}
     </div>
   );

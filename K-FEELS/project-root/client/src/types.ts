@@ -18,10 +18,11 @@ export interface Question {
 export interface Drama {
   id: number;
   title: string;
-  year?: number;
+  year?: string | number;
   image?: string;
-  tags: string[];
-  description?: string;
+  poster?: string;
+  poster_path?: string;
+  tags?: string[];
 }
 
 //for quiz in redux
