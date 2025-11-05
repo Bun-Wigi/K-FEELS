@@ -1,17 +1,22 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
+import { Provider } from 'react-redux';
+import { store } from "../k-feels-vite/src/store";
 import App from "./App";
+import "./styles.css";
 
-const rootElement = document.getElementById("root");
 
-if (rootElement) {
-  const root = createRoot(rootElement);
+const container = document.getElementById("root");
+if (!container) throw new Error("Root element not found");
 
-  root.render(
-    <React.StrictMode>
+
+const root = createRoot(container);
+
+// Render the app
+root.render(
+  <React.StrictMode>
+    <Provider store={store}>
       <App />
-    </React.StrictMode>
-  );
-} else {
-  console.error('not found element id="root"');
-}
+    </Provider>
+  </React.StrictMode>
+);
