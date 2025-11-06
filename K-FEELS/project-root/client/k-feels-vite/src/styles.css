@@ -1,0 +1,175 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap");
+
+/* Basic reset + font */
+* {
+  box-sizing: border-box;
+  font-family: "Noto Sans KR", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Background: soft pink → lilac gradient */
+body {
+  background: linear-gradient(135deg, #ffe6f0, #d6c1ff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Layout wrapper */
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Title text styling */
+.title {
+  font-size: 2.5rem;
+  color: #ff4f85;
+  margin-bottom: 2rem;
+  text-shadow: 0 2px 8px rgba(255, 143, 171, 0.4);
+}
+
+/* Card stacking illusion */
+.card-stack {
+  position: relative;
+  perspective: 1000px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Decorative backdrop cards */
+.card-back {
+  position: absolute;
+  width: 360px;
+  height: 250px;
+  background: rgba(255, 241, 245, 0.7);
+  border-radius: 18px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  z-index: 0;
+}
+
+/* Main quiz card */
+.card {
+  position: relative;
+  z-index: 2;
+  background: #ffe6f2;
+  border-radius: 18px;
+  padding: 3rem 4rem;
+  width: 360px;
+  min-height: 250px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transform-style: preserve-3d;
+}
+
+/* Title inside card */
+.card h2 {
+  color: #ff4f85;
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+}
+
+/* Buttons layout */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Button base style */
+.options button {
+  background: linear-gradient(135deg, #ffd1b3, #ffafcc);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.25rem;
+  padding: 1rem 0;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+}
+
+/* Button hover effect */
+.options button:hover {
+  transform: scale(1.08);
+  box-shadow: 0 8px 20px rgba(255, 95, 155, 0.5);
+  background: linear-gradient(135deg, #ffafcc, #ff88b3);
+}
+
+/* Ripple-style press effect */
+.options button:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 0 rgba(255, 95, 155, 0);
+  transition: transform 0.1s ease-out;
+}
+
+/* ----------------------------------------
+   SPARKLE EFFECT ✨
+---------------------------------------- */
+.sparkle-container {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Each sparkle particle */
+.sparkle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(circle, #fffbe6 30%, rgba(255, 255, 255, 0) 80%);
+  border-radius: 50%;
+  box-shadow: 0 0 15px 5px rgba(255, 220, 180, 0.9),
+    0 0 25px 8px rgba(255, 240, 200, 0.4);
+  animation: sparkle-burst 1s ease-out forwards;
+}
+
+/* Sparkles fly outward and fade away */
+@keyframes sparkle-burst {
+  0% {
+    transform: scale(0.5) translateY(0);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(1.2) translateY(-60px);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.8) translateY(-80px);
+    opacity: 0;
+  }
+}
+
+/* ----------------------------------------
+   CARD POP EFFECT 💥
+---------------------------------------- */
+.card-expand {
+  animation: card-expand 0.25s ease-out forwards;
+}
+
+/* Brief outward scale pop */
+@keyframes card-expand {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
