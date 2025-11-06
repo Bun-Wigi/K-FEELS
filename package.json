@@ -1,0 +1,21 @@
+{
+  "name": "k-feelz",
+  "version": "1.0.0",
+  "description": "This project is a Mood Tracker application built with a React frontend and an Express backend. The application allows users to take a mood quiz, view their results, and save their favorite moods.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FloppyX2SeaSpiders/K-FEELZ.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/FloppyX2SeaSpiders/K-FEELZ/issues"
+  },
+  "homepage": "https://github.com/FloppyX2SeaSpiders/K-FEELZ#readme"
+}

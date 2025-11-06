@@ -1,0 +1,17 @@
+Sprint 1:
+
+convert things to JS from TS 
+
+check slices 
+testing ?
+
+App.tsx 
+-random isn't exactly random - same result each button click
+
+organize components
+
+check privacy concerns, i.e. mongo passwords
+
+low priority:
+sync model files
+git hub readme
