@@ -1,10 +1,6 @@
 import express from "express";
-//const express = require('express');
 import mongoose from "mongoose";
-//const mongoose = require('mongoose');
 import bodyParser from "body-parser";
-//const bodyParser = require('body-parser');
-//const routes = require('./routes/index');
 import router from "./routes/index.js";
 import kDramaRouter from "./routes/kDramaRoutes.js";
 import dotenv from "dotenv";
@@ -36,15 +32,16 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
+app.get("/", (req, res) => {
+  res.send("Hello from your server!");
+});
+
 // kDrama Routes
-app.use("/api", router);
 app.use("/api/kdramas", kDramaRouter);
 
 // Routes
 app.use("/api", router); // This mounts all routes under /api prefix
-app.get("/", (req, res) => {
-  res.send("Hello from your server!");
-});
+
 
 // Catch-all route for debugging
 app.use((req, res) => {

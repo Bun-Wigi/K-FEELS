@@ -2,8 +2,15 @@ Sprint 1:
 
 convert things to JS from TS 
 
+figure out mongodb access / etc
+
 check slices 
 testing ?
+
+server
+-global error handling?
+
+review controllers
 
 App.tsx 
 -random isn't exactly random - same result each button click
@@ -15,3 +22,5 @@ check privacy concerns, i.e. mongo passwords
 low priority:
 sync model files
 git hub readme
+
+-merge JSON packages and have just one 
