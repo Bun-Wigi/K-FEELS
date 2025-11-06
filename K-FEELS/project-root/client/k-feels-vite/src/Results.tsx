@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import './features/results.css';
 
 type TMDBResult = {
   id: number;
@@ -33,7 +34,7 @@ const TMDBResults: React.FC<TMDBResultsProps> = ({
   searchQuery = '',
   loadPopular = false,
 }) => {
-  const dispatch = useDispatch<any>();
+  const dispatch = useDispatch();
   const { results, loading, error } = useSelector((state: RootState) => state.tmdb);
 
   useEffect(() => {
@@ -47,42 +48,54 @@ const TMDBResults: React.FC<TMDBResultsProps> = ({
   }, [searchQuery, loadPopular, dispatch]);
 
   if (loading) {
-    return <div className="loading">Loading Korean dramas...</div>;
+    return (
+      <div className="results-loading">
+        <div className="loading-spinner"></div>
+        Loading Korean dramas...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="error">Error: {error}</div>;
+    return <div className="results-error">Error: {error}</div>;
   }
 
   if (!results || results.length === 0) {
-    return <div className="no-results">No results found</div>;
+    return (
+      <div className="results-empty">
+        <h3>No results found</h3>
+        <p>Try adjusting your search or browse popular dramas.</p>
+      </div>
+    );
   }
 
   return (
-    <div className="tmdb-results">
+    <div className="results-container">
       <div className="results-grid">
         {results.map((item: TMDBResult) => (
           <div key={item.id} className="result-card">
-            <img
-              src={
-                item.poster_path
-                  ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
-                  : '/placeholder-poster.jpg'
-              }
-              alt={item.name || 'poster'}
-              className="poster"
-              onError={(e) => {
-                (e.currentTarget as HTMLImageElement).src = '/placeholder-poster.jpg';
-              }}
-            />
-            <div className="result-info">
-              <h3 className="title">{item.name}</h3>
-              <p className="overview">{item.overview}</p>
-              <div className="meta">
-                <span className="rating">⭐ {(item.vote_average ?? 0).toFixed(1)}</span>
-                <span className="date">{item.first_air_date}</span>
+            <div className="result-card-header">
+              <img
+                src={
+                  item.poster_path
+                    ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+                    : '/placeholder-poster.jpg'
+                }
+                alt={item.name || 'poster'}
+                className="result-poster"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = '/placeholder-poster.jpg';
+                }}
+              />
+              <div className="result-content">
+                <h3 className="result-title">{item.name}</h3>
+                <p className="result-date">{item.first_air_date}</p>
+                <div className="result-rating">
+                  {(item.vote_average ?? 0).toFixed(1)}
+                </div>
               </div>
             </div>
+            <p className="result-overview">{item.overview}</p>
           </div>
         ))}
       </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 import { logout } from './features/authSlice';
+import { resetQuiz } from './features/tmdbSlice';
 import './navbar.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -21,6 +22,7 @@ const NavBar: React.FC = () => {
     };
 
     const handleHomeClick = () => {
+        dispatch(resetQuiz()); // Reset the quiz state
         navigate('/');
     };
 

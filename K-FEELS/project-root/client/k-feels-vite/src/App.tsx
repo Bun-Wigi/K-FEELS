@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import NavBar from "./Navbar";
 import Card from "./Card";
 import Results from "./Results";
@@ -136,19 +136,17 @@ const QuizFlow: React.FC = () => {
 };
 
 const App: React.FC = () => {
-  // Workaround for TypeScript/react type mismatch: cast the router components to any
-  const RoutesComp: any = Routes;
-  const RouteComp: any = Route;
-
   return (
     <Router>
       <div>
         <NavBar />
         <main className="main-content">
-          <RoutesComp>
-            <RouteComp path="/" element={<QuizFlow />} />
-            <RouteComp path="/auth" element={<Auth />} />
-          </RoutesComp>
+          <Routes>
+            <Route path="/" element={<QuizFlow />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/login" element={<Navigate to="/auth" replace />} />
+            <Route path="/register" element={<Navigate to="/auth" replace />} />
+          </Routes>
         </main>
       </div>
     </Router>

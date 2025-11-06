@@ -26,7 +26,7 @@ const initialState: TMDBState = {
   currentQuery: '',
 };
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 // Fetch popular K-dramas from your backend
 export const fetchPopularKDramas = createAsyncThunk(
@@ -69,6 +69,12 @@ const tmdbSlice = createSlice({
     setCurrentQuery(state, action: PayloadAction<string>) {
       state.currentQuery = action.payload;
     },
+    resetQuiz(state) {
+      state.results = [];
+      state.error = null;
+      state.currentQuery = '';
+      state.loading = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -101,5 +107,5 @@ const tmdbSlice = createSlice({
   },
 });
 
-export const { clearResults, setCurrentQuery } = tmdbSlice.actions;
+export const { clearResults, setCurrentQuery, resetQuiz } = tmdbSlice.actions;
 export default tmdbSlice.reducer;
