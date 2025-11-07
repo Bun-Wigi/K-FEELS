@@ -24,3 +24,6 @@ sync model files
 git hub readme
 
 -merge JSON packages and have just one 
+
+
+install considernpm install express typescript ts-node @types/express dotenv @types/dotenv jsonwebtoken @types/jsonwebtoken mongoose
