@@ -1,11 +1,18 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
+import { logout } from '../features/authSlice';
+import { useNavigate } from 'react-router-dom';
 import '../header.css';
 
+// Update interface to match your authSlice
 interface AuthState {
-    authenticated: boolean;
-    user: string;
+    isAuthenticated: boolean;
+    user: {
+        id: string;
+        email: string;
+        name?: string;
+    } | null;
 }
 
 const selectAuth = (state: { auth: AuthState }) => state.auth;
@@ -13,23 +20,26 @@ const selectAuth = (state: { auth: AuthState }) => state.auth;
 const selectAuthenticatedUser = createSelector(
     [selectAuth],
     (auth) => ({
-        authenticated: auth.authenticated || false,
-        user: auth.user?.split('@')[0] || 'Guest',
+        authenticated: auth.isAuthenticated || false,
+        user: auth.user?.email?.split('@')[0] || auth.user?.name || 'Guest',
     })
 );
 
 const Header = () => {
     const { authenticated, user } = useSelector(selectAuthenticatedUser);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const handleSignOut = () => {
-        dispatch({ type: 'auth/signOut' });
+        dispatch(logout());
     };
 
     const handleSignIn = () => {
-        dispatch({ type: 'auth/logIn' });
+        console.log('Redirect to login');
+        navigate('/login');
     };
 
+    // ...rest of your existing JSX code stays the same...
     if (authenticated) {
         return (
             <header>

@@ -198,3 +198,83 @@ body {
   display: grid;
   gap: 10px;
 }
+
+/* Login Page Styles */
+
+/* Auth Form Styles */
+.auth-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.auth-title {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #333;
+    font-size: 1.75rem;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-input {
+    padding: 0.75rem;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+    background-color: #fff;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #d6c1ff;
+    box-shadow: 0 0 0 3px rgba(214, 193, 255, 0.1);
+}
+
+.btn-primary {
+    background-color: #d6c1ff;
+    color: #333;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #cda0f4;
+    transform: translateY(-1px);
+}
+
+.auth-toggle {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e1e5e9;
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: #ff4f85;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: inherit;
+    font-weight: 600;
+}
+
+.btn-link:hover {
+    color: #e03e6b;
+}

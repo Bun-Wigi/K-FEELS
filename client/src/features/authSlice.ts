@@ -45,7 +45,7 @@ interface ThunkApiConfig {
 
 const storedUser: User | null = JSON.parse(localStorage.getItem('user') || 'null');
 const storedToken: string | null = localStorage.getItem('token');
-const baseURL: string = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+const baseURL: string = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5172';
 
 const initialState: AuthState = {
   user: storedUser,
@@ -58,13 +58,13 @@ const initialState: AuthState = {
 
 
 export const authenticateUser = createAsyncThunk<
-  AuthFulfilledPayload, 
+  AuthFulfilledPayload & { redirectTo?: string }, // Add redirectTo to return type
   AuthThunkArgs, 
   ThunkApiConfig
 >(
   'auth/authenticateUser', 
   async ({ email, password, mode }: AuthThunkArgs, thunkAPI) => {
-    const endpoint = mode === 'login' ? `${baseURL}/auth/login` : `${baseURL}/auth/register`;
+    const endpoint = mode === 'login' ? `${baseURL}/api/auth/login` : `${baseURL}/api/auth/register`;
 
     try {
       const res = await fetch(endpoint, {
@@ -74,24 +74,24 @@ export const authenticateUser = createAsyncThunk<
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
-
-      if (!res.ok || !data.user || !data.token) {
-        return thunkAPI.rejectWithValue(data.error || 'Authentication failed');
+      if (!res.ok) {
+        const errorData = await res.text();
+        return thunkAPI.rejectWithValue(errorData || `HTTP error! status: ${res.status}`);
       }
 
-      localStorage.setItem('token', data.token);
+      const data = await res.json();
+      
+      // Store in localStorage for persistence
       localStorage.setItem('user', JSON.stringify(data.user));
-
-      return { user: data.user as User, token: data.token };
-
+      localStorage.setItem('token', data.token);
+      
+      return data; // This now includes redirectTo
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       return thunkAPI.rejectWithValue(message || 'Could not connect to the server.');
     }
   }
 );
-
 
 const authSlice = createSlice({
   name: 'auth',

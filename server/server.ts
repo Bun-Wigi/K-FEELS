@@ -21,7 +21,15 @@ const MONGODB_URI = process.env.MONGODB_URI ||
   "mongodb+srv://guesooul_db_user:0NYKzxnGMcYZWRHO@dramadb.e9dlbow.mongodb.net/?appName=DramaDB";
 
 // Middleware - runs before all requests
-app.use(cors());  // Allow cross-origin requests
+// Updated CORS configuration to fix the credentials issue
+app.use(cors({
+  origin: 'http://localhost:5173', // Specific origin instead of wildcard
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Set-Cookie']
+}));
+
 app.use(bodyParser.json());  // Parse JSON request bodies
 app.use(bodyParser.urlencoded({ extended: true }));  // Parse URL-encoded bodies
 

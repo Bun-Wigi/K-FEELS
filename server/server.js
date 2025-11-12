@@ -19,6 +19,13 @@ const PORT = process.env.PORT || 5172;
 const MONGODB_URI = process.env.MONGODB_URI || 
   "mongodb+srv://guesooul_db_user:0NYKzxnGMcYZWRHO@dramadb.e9dlbow.mongodb.net/?appName=DramaDB";
 
+app.use(cors({
+  origin: 'http://localhost:5173', // Your frontend URL
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());

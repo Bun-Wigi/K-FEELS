@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Quiz from "./pages/Quiz";
 import Results from "./pages/Results";
 import Header from "./components/Header";
+import Login from "./pages/Login";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
           <Route path="/quiz/:mode" element={<Quiz />} />
           <Route path="/results" element={<Results />} />
           <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </div>
     </BrowserRouter>
