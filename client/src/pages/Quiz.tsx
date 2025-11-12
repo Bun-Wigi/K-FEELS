@@ -22,9 +22,9 @@ export default function Quiz() {
   const navigate = useNavigate();
 
   //fn runs every time user selects answ
-  const handleAnswer = (tag:any) => {
+  const handleAnswer = (tag:string) => {
     //add new answ tag to the arr, tagFromAnsw-prev answ, tag-current
-    const next = [...tagFromAnsw, tag];
+    const next:any = [...tagFromAnsw, tag]; //is any actually ok?
     setTagFromAnsw(next);
 
     //check if this is the lst quest

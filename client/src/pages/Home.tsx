@@ -13,7 +13,7 @@ export default function Home() {
     { label: "Random movie", value: "random" },
   ];
 
-  const onSelect = (value) => {
+  const onSelect = (value:string) => {
     if (value === "mood") return navigate("/quiz/mood");
     if (value === "character") return navigate("/quiz/character");
     if (value === "random") {
