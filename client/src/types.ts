@@ -42,3 +42,13 @@ export interface RootState {
   quiz: QuizState;
   recs: RecommendationState;
 }
+
+export interface CharImage {
+  main: String,
+  detective: String, 
+  prince: String, 
+  girlboss: String, 
+  sidekick: String, 
+  villian: String,
+  softie: String,
+}

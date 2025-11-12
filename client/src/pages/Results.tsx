@@ -2,27 +2,28 @@
 import { useLocation, Link } from "react-router-dom";
 import dramas from "../data/drama.json";
 import DramaGrid from "../components/DramaGrid";
+// import { CharImage } from "../types";
 
-const characterImg = {
-  main: String,
-  detective: String, 
-  prince: String, 
-  girlboss: String, 
-  sidekick: String, 
-  villian: String,
-  softie: String,
-}
-  
-//    main: "/characters/main.jpg",
-//    detective: "/characters/detective.jpg"
-//    prince: "/characters/prince.jpg",
-//   girlboss: "/characters/girlboss.jpg",
+export default function Results() {
+
+//   const characterImg = {
+//   main: "/characters/main.jpg",
+//   fantasy_prince: "/characters/fantasy_prince.jpg",
+//   "strong female lead": "/characters/strong_female_lead.jpg",
 //   softie: "/characters/softie.jpg",
-//    sidekick: "/characters/sidekick.jpg"
 //   villain: "/characters/villain.jpg",
 // };
 
-export default function Results() {
+  const characterImg = {
+  main: "/characters/main.jpg",
+  detective: "/characters/detective.jpg",
+  prince: "/characters/prince.jpg",
+  girlboss: "/characters/girlboss.jpg",
+  softie: "/characters/softie.jpg",
+  sidekick: "/characters/sidekick.jpg",
+  villian: "/characters/villain.jpg",
+
+  };
   // get data passed state from Quiz page via navigate state(tagFromAnsw, mode)
   const location = useLocation();
   const state = location.state; //
@@ -71,8 +72,8 @@ export default function Results() {
         {mode === "mood" && topTag
           ? `Your mood today is: ${topTag.toUpperCase()}`
           : mode === "character" && topTag
-          ? `Your character type is: ${topTag.toUpperCase()}`
-          : "Random pick"}
+            ? `Your character type is: ${topTag.toUpperCase()}`
+            : "Random pick"}
       </h2>
 
       {charPicture && (
