@@ -18,10 +18,7 @@ export const questionsMood: Question[] = [
     id: 2,
     text: "What’s your current emotional weather forecast?",
     options: [
-      {
-        answer: "Sunny with a chance of romance",
-        tag: "romantic",
-      },
+      { answer: "Sunny with a chance of romance", tag: "romantic" },
       { answer: "Cloudy with 99% chance of overthinking", tag: "melancholic" },
       { answer: "Tornado of chaos and caffeine", tag: "funny" },
     ],
@@ -34,50 +31,30 @@ export const questionsMood: Question[] = [
         answer: "Pretend I didn’t notice but secretly scream inside",
         tag: "romantic",
       },
-      {
-        answer: "Stalk all their old posts from 2017",
-        tag: "melancholic",
-      },
-      {
-        answer: "Accidentally like their pet’s photo — oops",
-        tag: "funny",
-      },
+      { answer: "Stalk all their old posts from 2017", tag: "melancholic" },
+      { answer: "Accidentally like their pet’s photo — oops", tag: "funny" },
     ],
   },
   {
     id: 4,
     text: "You wake up as a K-drama lead. What’s your superpower?",
     options: [
-      {
-        answer: "Instant hair perfection after crying",
-        tag: "romantic",
-      },
+      { answer: "Instant hair perfection after crying", tag: "romantic" },
       {
         answer: "Summoning sad rain whenever I’m dramatic",
         tag: "melancholic",
       },
-      {
-        answer: "Teleporting to the fridge every 5 minutes",
-        tag: "funny",
-      },
+      { answer: "Teleporting to the fridge every 5 minutes", tag: "funny" },
     ],
   },
   {
     id: 5,
     text: "You’re the main character today. What’s the scene?",
     options: [
-      {
-        answer: "A slow-mo walk under cherry blossoms",
-        tag: "romantic",
-      },
-      {
-        answer: "Crying beautifully in the rain",
-        tag: "melancholic",
-      },
-      {
-        answer: "Tripping over nothing but pretending it’s a dance move",
-        tag: "funny",
-      },
+      { answer: "A slow-mo walk under cherry blossoms", tag: "romantic" },
+      { answer: "Crying beautifully in the rain", tag: "melancholic" },
+      { answer: "Tripping over nothing but pretending it’s a dance move", tag: "funny",
+},
     ],
   },
 ];

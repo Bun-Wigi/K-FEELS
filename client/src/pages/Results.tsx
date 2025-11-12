@@ -4,12 +4,23 @@ import dramas from "../data/drama.json";
 import DramaGrid from "../components/DramaGrid";
 
 const characterImg = {
-  main: "/characters/main.jpg",
-  fantasy_prince: "/characters/fantasy_prince.jpg",
-  "strong female lead": "/characters/strong_female_lead.jpg",
-  softie: "/characters/softie.jpg",
-  villain: "/characters/villain.jpg",
-};
+  main: String,
+  detective: String, 
+  prince: String, 
+  girlboss: String, 
+  sidekick: String, 
+  villian: String,
+  softie: String,
+}
+  
+//    main: "/characters/main.jpg",
+//    detective: "/characters/detective.jpg"
+//    prince: "/characters/prince.jpg",
+//   girlboss: "/characters/girlboss.jpg",
+//   softie: "/characters/softie.jpg",
+//    sidekick: "/characters/sidekick.jpg"
+//   villain: "/characters/villain.jpg",
+// };
 
 export default function Results() {
   // get data passed state from Quiz page via navigate state(tagFromAnsw, mode)
@@ -21,7 +32,7 @@ export default function Results() {
 
   // variables to store results
   let list = []; //for final list
-  let topTag = null; //most frequent tag
+  let topTag:any = null; //most frequent tag //is any best type?
 
   // if random mode → show random picks
   if (mode === "random") {
@@ -88,7 +99,7 @@ export default function Results() {
 
       {/* Back button */}
       <div style={{ marginTop: 20 }}>
-        <Link to="/">← Back Home</Link>
+        <Link to="/">Back Home</Link>
       </div>
     </div>
   );
