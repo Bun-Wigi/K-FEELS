@@ -2,16 +2,28 @@
 import { useLocation, Link } from "react-router-dom";
 import dramas from "../data/drama.json";
 import DramaGrid from "../components/DramaGrid";
-
-const characterImg = {
-  main: "/characters/main.jpg",
-  fantasy_prince: "/characters/fantasy_prince.jpg",
-  "strong female lead": "/characters/strong_female_lead.jpg",
-  softie: "/characters/softie.jpg",
-  villain: "/characters/villain.jpg",
-};
+// import { CharImage } from "../types";
 
 export default function Results() {
+
+//   const characterImg = {
+//   main: "/characters/main.jpg",
+//   fantasy_prince: "/characters/fantasy_prince.jpg",
+//   "strong female lead": "/characters/strong_female_lead.jpg",
+//   softie: "/characters/softie.jpg",
+//   villain: "/characters/villain.jpg",
+// };
+
+  const characterImg = {
+  main: "/characters/main.jpg",
+  detective: "/characters/detective.jpg",
+  prince: "/characters/prince.jpg",
+  girlboss: "/characters/girlboss.jpg",
+  softie: "/characters/softie.jpg",
+  sidekick: "/characters/sidekick.jpg",
+  villian: "/characters/villain.jpg",
+
+  };
   // get data passed state from Quiz page via navigate state(tagFromAnsw, mode)
   const location = useLocation();
   const state = location.state; //
@@ -21,7 +33,7 @@ export default function Results() {
 
   // variables to store results
   let list = []; //for final list
-  let topTag = null; //most frequent tag
+  let topTag:any = null; //most frequent tag //is any best type?
 
   // if random mode → show random picks
   if (mode === "random") {
@@ -60,8 +72,8 @@ export default function Results() {
         {mode === "mood" && topTag
           ? `Your mood today is: ${topTag.toUpperCase()}`
           : mode === "character" && topTag
-          ? `Your character type is: ${topTag.toUpperCase()}`
-          : "Random pick"}
+            ? `Your character type is: ${topTag.toUpperCase()}`
+            : "Random pick"}
       </h2>
 
       {charPicture && (
@@ -88,7 +100,7 @@ export default function Results() {
 
       {/* Back button */}
       <div style={{ marginTop: 20 }}>
-        <Link to="/">← Back Home</Link>
+        <Link to="/">Back Home</Link>
       </div>
     </div>
   );

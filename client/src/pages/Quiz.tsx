@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ProgressBar from "../components/ProgressBar";
-import { questionCharacter } from "../data/questions_char";
+import { questionsCharacter } from "../data/questions_char";
 import { questionsMood } from "../data/questions_mood";
 import { useNavigate, useParams } from "react-router-dom";
 import QuestionCard from "../components/QuestionCard";
@@ -10,7 +10,7 @@ export default function Quiz() {
   const { mode = "mood" } = useParams();
 
   //choose wich set of quesions to use based on mode
-  const questions = mode === "character" ? questionCharacter : questionsMood;
+  const questions = mode === "character" ? questionsCharacter : questionsMood;
 
   //keep track og wich question index is currentry shown
   const [current, setCurrent] = useState(0);
@@ -22,9 +22,9 @@ export default function Quiz() {
   const navigate = useNavigate();
 
   //fn runs every time user selects answ
-  const handleAnswer = (tag) => {
+  const handleAnswer = (tag:string) => {
     //add new answ tag to the arr, tagFromAnsw-prev answ, tag-current
-    const next = [...tagFromAnsw, tag];
+    const next:any = [...tagFromAnsw, tag]; //is any actually ok?
     setTagFromAnsw(next);
 
     //check if this is the lst quest
