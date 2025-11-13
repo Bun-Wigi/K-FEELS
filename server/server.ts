@@ -17,9 +17,9 @@ const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5172;
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGO_URI = process.env.MONGO_URI;
 
-if (!MONGODB_URI) throw new Error("Missing MONGODB_URI in .env");
+if (!MONGO_URI) throw new Error("Missing MONGODB_URI in .env");
 if (!PORT) throw new Error("Missing PORT in .env");
 
 // Middleware - runs before all requests
@@ -36,7 +36,7 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
 // Connect to MongoDB database
 const connectDB = async () => {
   try {
-    await mongoose.connect(MONGODB_URI);
+    await mongoose.connect(MONGO_URI);
     console.log("MongoDB connected");
   } catch (err) {
     console.error("MongoDB connection error:", err);
