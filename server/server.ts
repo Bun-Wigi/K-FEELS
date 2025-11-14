@@ -1,10 +1,10 @@
 import express, { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
-import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import { dirname } from "path";
 import router from "./routes/index.js";
 import kDramaRouter from "./routes/kDramaRoutes.js";
 import authRouter from "./routes/authRoutes.js";
@@ -13,55 +13,68 @@ dotenv.config();
 
 // Get __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5172;
-const MONGODB_URI = process.env.MONGODB_URI || 
-  "mongodb+srv://guesooul_db_user:0NYKzxnGMcYZWRHO@dramadb.e9dlbow.mongodb.net/?appName=DramaDB";
+const MONGO_URI = process.env.MONGO_URI;
 
-// Middleware - runs before all requests
-app.use(cors());  // Allow cross-origin requests
-app.use(bodyParser.json());  // Parse JSON request bodies
-app.use(bodyParser.urlencoded({ extended: true }));  // Parse URL-encoded bodies
+// Only require env vars if NOT in test
+if (process.env.NODE_ENV !== "test") {
+  if (!MONGO_URI) throw new Error("Missing MONGO_URI in .env");
+}
 
-// Debug middleware - logs every request
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Debug
 app.use((req: Request, _res: Response, next: NextFunction) => {
   console.log(`${req.method} ${req.url}`);
   next();
 });
 
-// Connect to MongoDB database
-mongoose
-  .connect(MONGODB_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+// Connect to MongoDB (SKIPPED during tests)
+const connectDB = async () => {
+  if (process.env.NODE_ENV === "test") {
+    console.log("🧪 Skipping DB connection in test mode");
+    return;
+  }
+
+  try {
+    await mongoose.connect(MONGO_URI!);
+    console.log("MongoDB connected");
+  } catch (err) {
+    console.error("MongoDB connection error:", err);
+    process.exit(1);
+  }
+};
+
+connectDB();
 
 // API Routes
-app.use("/api", router);  // Mood routes
-app.use("/api/auth", authRouter);  // Auth routes (login, register, logout)
-app.use("/api/kdramas", kDramaRouter);  // K-drama routes
+app.use("/api", router);
+app.use("/api/auth", authRouter);
+app.use("/api/kdramas", kDramaRouter);
 
 // Serve static files in production mode
-if (process.env.NODE_ENV === 'production') {
-  const clientBuildPath = path.join(__dirname, '../client/dist');
+if (process.env.NODE_ENV === "production") {
+  const clientBuildPath = path.join(__dirname, "../client/dist");
   app.use(express.static(clientBuildPath));
-  
-  // Serve index.html for all other routes (React Router)
-  app.get('*', (_req: Request, res: Response) => {
-    res.sendFile(path.join(clientBuildPath, 'index.html'));
+
+  app.get("*", (_req: Request, res: Response) => {
+    res.sendFile(path.join(clientBuildPath, "index.html"));
   });
 } else {
-  // Development mode - API only
   app.get("/", (_req: Request, res: Response) => {
     res.json({
       message: "K-FEELZ API Server is running",
       mode: "development",
-      note: "Run 'npm run dev' in /client for frontend with HMR"
+      note: "Run 'npm run dev' in /client for frontend with HMR",
     });
   });
 
-  // 404 handler for development
   app.use((req: Request, res: Response) => {
     console.log("404 - Route not found:", req.method, req.url);
     res.status(404).json({
@@ -83,7 +96,13 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+// Global error handler
+app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  console.error("Global error:", err);
+  res.status(500).json({
+    message: "Internal server error",
+    error: err.message || err,
+  });
 });
+
+export default app;
