@@ -5,9 +5,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
-import router from "./routes/index.js";
-import kDramaRouter from "./routes/kDramaRoutes.js";
-import authRouter from "./routes/authRoutes.js";
+import router from "./routes/index";
+import kDramaRouter from "./routes/kDramaRoutes"
+import authRouter from "./routes/authRoutes";
 
 dotenv.config();
 
@@ -46,9 +46,9 @@ mongoose
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // API Routes
-app.use("/api", router);  // Mood routes
-app.use("/api/auth", authRouter);  // Auth routes (login, register, logout)
-app.use("/api/kdramas", kDramaRouter);  // K-drama routes
+app.use("/api", router); 
+app.use("/api/auth", authRouter);  
+app.use("/api", kDramaRouter);
 
 // Serve static files in production mode
 if (process.env.NODE_ENV === 'production') {

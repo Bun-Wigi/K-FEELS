@@ -70,7 +70,7 @@ export const register = async (req: Request, res: Response): Promise<any> => {
 };
 
 // Log in an existing user
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response): Promise<any> => {
   try {
     const { email, password } = req.body;
     

@@ -3,7 +3,7 @@ export type Mode = "mood" | "character";
 
 //one user's answer, in QuestionCard
 export interface AnswerOption {
-  answer: string;
+  answer: string;  // ← Since your data uses 'answer' not 'text'
   tag: string;
 }
 
@@ -39,6 +39,18 @@ export interface RecommendationState {
 
 //for root Redux
 export interface RootState {
-  quiz: QuizState;
-  recs: RecommendationState;
+  mood: any; // your existing mood state
+  genre: {
+    currentGenreId: number | null;
+    calculatedMood: string | null;
+  };
+  kdrama: {
+    recommendations: Drama[];
+    status: string;
+    error: string | null;
+  };
+  auth: {
+    isAuthenticated: boolean;
+    user: any;
+  };
 }

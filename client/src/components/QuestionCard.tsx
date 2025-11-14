@@ -1,31 +1,26 @@
-//reflect one question and answers's options
-
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import type { Question } from "../types";
+import { Question, AnswerOption } from "../types";
 
 interface Props {
-  question: Question; // { id, text, options: [{answer, tag}] }
-
-  //callback to parent Quiz when user picks answer
-  onAnswer: (tag: string) => void; // save a certain tag
+  question: Question;
+  onAnswer: (tag: string) => void;
 }
 
 export default function QuestionCard({ question, onAnswer }: Props) {
-  //expand animation
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  //fn that handlers user answer
-  const handleSelect = (tag: string) => {
-    //collapse block first
+  const handleSelect = (tag: string): void => {
     setIsOpen(false);
-    // wait for animation to finish and call parent handler
     setTimeout(() => onAnswer(tag), 220);
   };
 
+  if (!question || !question.options) {
+    return <div>❌ No question data received</div>;
+  }
+
   return (
     <motion.div layout>
-      {/*header section clickable*/}
       <motion.div
         layout
         onClick={() => setIsOpen((v) => !v)}
@@ -36,18 +31,15 @@ export default function QuestionCard({ question, onAnswer }: Props) {
           background: isOpen ? "#f4f0ff" : "#f6f7fb",
         }}
       >
-        {/*question text*/}
         <motion.h2 layout="position" style={{ margin: 0, fontSize: 22 }}>
           {question.text}
         </motion.h2>
 
-        {/*hint top to choose*/}
         {!isOpen && (
           <div style={{ marginTop: 10, color: "#6b6b6b" }}>Tap to choose</div>
         )}
       </motion.div>
 
-      {/* expandable area with questions */}
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
@@ -59,21 +51,21 @@ export default function QuestionCard({ question, onAnswer }: Props) {
             transition={{ duration: 0.2 }}
             style={{ overflow: "hidden" }}
           >
-            {/*container for all answers*/}
             <div
               style={{
                 display: "grid",
                 gap: 10,
                 marginTop: 14,
+                padding: 10,
               }}
             >
-              {question.options.map((opt) => (
+              {question.options.map((opt: AnswerOption, index: number) => (
                 <motion.button
-                  key={opt.tag}
-                  whileHover={{ scale: 1.2 }}
+                  key={opt.tag || `option-${index}`}
+                  whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={(e) => {
-                    e.stopPropagation(); // prevent click from collapsing card
+                    e.stopPropagation();
                     handleSelect(opt.tag);
                   }}
                   style={{
@@ -87,8 +79,7 @@ export default function QuestionCard({ question, onAnswer }: Props) {
                     cursor: "pointer",
                   }}
                 >
-                  {/*answer's text*/}
-                  {opt.answer}
+                  {(opt as any).answer || (opt as any).text || opt.tag}
                 </motion.button>
               ))}
             </div>

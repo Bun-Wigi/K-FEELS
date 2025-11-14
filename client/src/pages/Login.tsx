@@ -15,8 +15,8 @@ const Login = () => {
     const dispatch = useDispatch<AppDispatch>(); 
     const navigate = useNavigate();
     
-    // Use the RootState type for the state
-    const { status, error } = useSelector((state: RootState) => state.auth);
+    // Use the RootState type for the state; fall back to any when auth slice is missing
+    const { status, error } = useSelector((state: any) => state.auth);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

@@ -35,21 +35,40 @@ const fetchFromTMDB = async (url: string): Promise<any> => {
   return response.json();
 };
 
-// GET /api/kdramas - Get top 10 popular Korean dramas
+// GET /api/kdramas - Get top 10 popular Korean dramas with English metadata
 export const getKoreanDramas = async (req: Request, res: Response): Promise<any> => {
   try {
+    console.log("🔍 Backend received query params:", req.query);
+    
     const genreId = req.query.genreId ? parseInt(req.query.genreId as string) : null;
+    const genreIds = req.query.genreIds ? (req.query.genreIds as string).split(',').map(id => parseInt(id.trim())) : null;
 
-    // Build TMDB API URL
-    let url = `https://api.themoviedb.org/3/discover/tv?language=ko-KR&region=KR&with_original_language=ko&sort_by=popularity.desc&page=1`;
+    console.log("🔍 Parsed genreId:", genreId);
+    console.log("🔍 Parsed genreIds:", genreIds);
 
-    // Add genre filter if provided
-    if (genreId) {
-      url += `&with_genres=${genreId}`;
+    // Updated to use en-US language for English results while keeping Korean content
+    let url = `https://api.themoviedb.org/3/discover/tv?language=en-US&region=KR&with_original_language=ko&sort_by=popularity.desc&page=1`;
+
+    let genreFilter = '';
+    
+    if (genreIds) {
+      const ids = genreIds; // already a number[] from earlier parsing
+      // Multiple genres - show dramas that match ANY of these genres
+      genreFilter = `&with_genres=${ids.join('|')}`; // Use | for OR logic
+      console.log(`🎬 Multiple genres filter: ${genreFilter}`);
+    } else if (genreId) {
+      // Single genre - make sure this works for romance (10749)
+      genreFilter = `&with_genres=${genreId}`;
+      console.log(`🎬 Single genre filter: ${genreFilter}`);
     }
+
+    // Add the full URL to the base API call
+    url += genreFilter;
+    console.log(`📡 Final TMDB URL: ${url}`);
 
     // Fetch data from TMDB
     const data = await fetchFromTMDB(url);
+    console.log(`✅ TMDB returned ${data.results?.length || 0} results`);
 
     // Add genre names to each show
     const results = data.results.slice(0, 10).map((show: any) => ({
@@ -67,7 +86,7 @@ export const getKoreanDramas = async (req: Request, res: Response): Promise<any>
   }
 };
 
-// GET /api/kdramas/search?query=<title> - Search for K-dramas by title
+// GET /api/kdramas/search?query=<title>&genreId=<optional> - Search for K-dramas by title
 export const searchKdramas = async (req: Request, res: Response): Promise<any> => {
   try {
     const query = req.query.query as string;
@@ -78,25 +97,54 @@ export const searchKdramas = async (req: Request, res: Response): Promise<any> =
       return res.status(400).json({ message: "Query parameter is required" });
     }
 
-    // Build TMDB search URL
-    const url = `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(query)}&language=ko-KR`;
-    const data = await fetchFromTMDB(url);
+    let results: any[] = [];
 
-    // Filter for TV shows only
-    let dramas = data.results.filter((item: any) => item.media_type === "tv");
+    // Use discover endpoint with keyword search for better Korean content filtering
+    // First, search for the keyword to get keyword ID
+    try {
+      const keywordUrl = `https://api.themoviedb.org/3/search/keyword?query=${encodeURIComponent(query)}&language=en-US`;
+      const keywordData = await fetchFromTMDB(keywordUrl);
+      
+      // If keywords found, use discover with keyword
+      if (keywordData.results && keywordData.results.length > 0) {
+        const keywordId = keywordData.results[0].id;
+        let discoverUrl = `https://api.themoviedb.org/3/discover/tv?language=en-US&with_original_language=ko&with_keywords=${keywordId}&sort_by=popularity.desc`;
+        
+        if (genreId) {
+          discoverUrl += `&with_genres=${genreId}`;
+        }
 
-    // Filter by genre if provided
-    if (genreId) {
-      dramas = dramas.filter((show: any) => show.genre_ids.includes(genreId));
+        const discoverData = await fetchFromTMDB(discoverUrl);
+        results = discoverData.results;
+      }
+    } catch (keywordError) {
+      console.log("Keyword search failed, proceeding with fallback");
+    }
+
+    // Fallback: if no keyword results, try direct search but filter for Korean content
+    if (results.length === 0) {
+      const searchUrl = `https://api.themoviedb.org/3/search/tv?query=${encodeURIComponent(query)}&language=en-US`;
+      const searchData = await fetchFromTMDB(searchUrl);
+      
+      // Filter for Korean content (original_language should be 'ko')
+      results = searchData.results.filter((item: any) => 
+        item.original_language === 'ko' || 
+        item.origin_country?.includes('KR')
+      );
+    }
+
+    // Apply genre filter if specified
+    if (genreId && results.length > 0) {
+      results = results.filter((show: any) => show.genre_ids?.includes(genreId));
     }
 
     // Add genre names to each show
-    const results = dramas.slice(0, 10).map((show: any) => ({
+    const finalResults = results.slice(0, 10).map((show: any) => ({
       ...show,
-      genre_names: show.genre_ids.map((id: number) => GENRES[id] || "Unknown"),
+      genre_names: show.genre_ids?.map((id: number) => GENRES[id] || "Unknown") || [],
     }));
 
-    res.status(200).json(results);
+    res.status(200).json(finalResults);
   } catch (error: any) {
     console.error("Error searching K-dramas:", error.message);
     res.status(500).json({ 

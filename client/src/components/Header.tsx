@@ -1,27 +1,16 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
-import { logout } from '../features/authSlice';
+import { logout } from '../features/authSlice';  // ← This should work now
 import { useNavigate } from 'react-router-dom';
 import '../header.css';
-
-// Update interface to match your authSlice
-interface AuthState {
-    isAuthenticated: boolean;
-    user: {
-        id: string;
-        email: string;
-        name?: string;
-    } | null;
-}
-
-const selectAuth = (state: { auth: AuthState }) => state.auth;
+import { RootState } from '../store';
 
 const selectAuthenticatedUser = createSelector(
-    [selectAuth],
+    [(state: RootState) => state.auth],
     (auth) => ({
-        authenticated: auth.isAuthenticated || false,
-        user: auth.user?.email?.split('@')[0] || auth.user?.name || 'Guest',
+        authenticated: auth?.isAuthenticated || false,
+        user: auth?.user?.email?.split('@')[0] || auth?.user?.name || 'Guest',
     })
 );
 
@@ -39,7 +28,8 @@ const Header = () => {
         navigate('/login');
     };
 
-    // ...rest of your existing JSX code stays the same...
+    console.log('🔍 Header - Authenticated:', authenticated, 'User:', user);
+
     if (authenticated) {
         return (
             <header>
