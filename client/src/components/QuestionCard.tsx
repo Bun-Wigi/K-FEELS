@@ -1,100 +1,116 @@
 //reflect one question and answers's options
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Question } from "../types";
 
 interface Props {
-  question: Question; // { id, text, options: [{answer, tag}] }
+  question: Question; // { id, text, options: [{ answer, tag }] }
 
-  //callback to parent Quiz when user picks answer
-  onAnswer: (tag: string) => void; // save a certain tag
+  // callback to parent when user picks an answer
+  onAnswer: (tag: string) => void;
 }
 
-export default function QuestionCard({ question, onAnswer }: Props) {
-  //expand animation
-  const [isOpen, setIsOpen] = useState(false);
+export default function AnimatedQuestionCard({ question, onAnswer }: Props) {
+  // state for sparkle burst
+  const [sparkles, setSparkles] = useState<{ id: number; angle: number }[]>([]);
+  // state for brief expansion animation when option clicked
+  const [expanded, setExpanded] = useState(false);
 
-  //fn that handlers user answer
+  // Trigger sparkle + card pop
+  const triggerBurst = () => {
+    // generate 12 sparkles evenly around a circle
+    const s = Array.from({ length: 12 }).map((_, i) => ({
+      id: Date.now() + i,
+      angle: (i / 12) * 360,
+    }));
+    setSparkles(s);
+    // clear sparkles after 1 sec
+    setTimeout(() => setSparkles([]), 1000);
+
+    // expand card briefly for click effect
+    setExpanded(true);
+    setTimeout(() => setExpanded(false), 250);
+  };
+
+  // Handle user selecting an answer
   const handleSelect = (tag: string) => {
-    //collapse block first
-    setIsOpen(false);
-    // wait for animation to finish and call parent handler
-    setTimeout(() => onAnswer(tag), 220);
+    triggerBurst();
+    // delay calling parent to sync with animation
+    setTimeout(() => onAnswer(tag), 250);
+  };
+
+  // Animation presets for card appear/disappear
+  const cardVariants = {
+    initial: { scale: 0.95, opacity: 0, y: 30 },
+    animate: { scale: 1, opacity: 1, y: 0, transition: { duration: 0.4 } },
+    exit: { scale: 0.9, opacity: 0, y: -20, transition: { duration: 0.3 } },
   };
 
   return (
-    <motion.div layout>
-      {/*header section clickable*/}
+    <AnimatePresence mode="wait">
       <motion.div
-        layout
-        onClick={() => setIsOpen((v) => !v)}
+        key={question.id}
+        className={`card ${expanded ? "card-expand" : ""}`}
+        variants={cardVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
         style={{
-          cursor: "pointer",
-          padding: "12px 8px",
+          padding: 12,
           borderRadius: 12,
-          background: isOpen ? "#f4f0ff" : "#f6f7fb",
+          background: "#f4f0ff",
         }}
       >
-        {/*question text*/}
-        <motion.h2 layout="position" style={{ margin: 0, fontSize: 22 }}>
-          {question.text}
-        </motion.h2>
-
-        {/*hint top to choose*/}
-        {!isOpen && (
-          <div style={{ marginTop: 10, color: "#6b6b6b" }}>Tap to choose</div>
-        )}
-      </motion.div>
-
-      {/* expandable area with questions */}
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            key="answers"
-            layout
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            style={{ overflow: "hidden" }}
-          >
-            {/*container for all answers*/}
+        {/* Sparkles overlay */}
+        <div className="sparkle-container">
+          {sparkles.map((s) => (
             <div
+              key={s.id}
+              className="sparkle"
+              style={{ transform: `rotate(${s.angle}deg) translateY(-80px)` }}
+            />
+          ))}
+        </div>
+
+        {/* Question text */}
+        <h2 style={{ margin: 0, fontSize: 22, color: "#1c1c1c" }}>
+          {question.text}
+        </h2>
+
+        {/* Hint for user */}
+        <div style={{ marginTop: 10, color: "#6b6b6b", fontSize: 14 }}>
+          Tap to choose
+        </div>
+
+        {/* Option Buttons */}
+        <div style={{ marginTop: 14, display: "grid", gap: 10 }}>
+          {question.options.map((opt) => (
+            <motion.button
+              key={opt.tag}
+              // hover and tap animations
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ duration: 0.1 }}
+              onClick={() => handleSelect(opt.tag)}
               style={{
-                display: "grid",
-                gap: 10,
-                marginTop: 14,
+                textAlign: "center",
+                padding: "12px 14px",
+                borderRadius: 12,
+                border: "1px solid #e171cbff",
+                background: "#eec1e4ff",
+                color: "#1c1c1c",
+                fontSize: 17,
+                fontFamily: "serif",
+                cursor: "pointer",
               }}
             >
-              {question.options.map((opt) => (
-                <motion.button
-                  key={opt.tag}
-                  whileHover={{ scale: 1.2 }}
-                  whileTap={{ scale: 0.97 }}
-                  onClick={(e) => {
-                    e.stopPropagation(); // prevent click from collapsing card
-                    handleSelect(opt.tag);
-                  }}
-                  style={{
-                    textAlign: "center",
-                    padding: "12px 14px",
-                    borderRadius: 12,
-                    border: "1px solid #e171cbff",
-                    background: "#eec1e4ff",
-                    fontSize: 17,
-                    fontFamily: "serif",
-                    cursor: "pointer",
-                  }}
-                >
-                  {/*answer's text*/}
-                  {opt.answer}
-                </motion.button>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+              {/* answer text */}
+              {opt.answer}
+            </motion.button>
+          ))}
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 }
