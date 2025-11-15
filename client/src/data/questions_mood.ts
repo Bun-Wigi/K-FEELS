@@ -12,8 +12,8 @@ export const questionsMood: Question[] = [
     ],
   },
   {
-    id: 2,
-    text: "Whats your current emotional weather forecast?",
+    id: 2, 
+    text: "What’s your current emotional weather forecast?",
     options: [
       { answer: "Sunny with a chance of romance", tag: "romantic"},
       { answer: "Cloudy with 99% chance of overthinking", tag: "melancholic"},

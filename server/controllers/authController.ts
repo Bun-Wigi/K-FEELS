@@ -61,6 +61,7 @@ export const register = async (req: Request, res: Response): Promise<any> => {
         email: newUser.email 
       },
       token,
+      redirectTo: '/' // Add redirect URL
     });
   } catch (err) {
     console.error('Registration error:', err);
@@ -72,7 +73,7 @@ export const register = async (req: Request, res: Response): Promise<any> => {
 export const login = async (req: Request, res: Response): Promise<any> => {
   try {
     const { email, password } = req.body;
-
+    
     // Step 1: Validate input
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password are required' });
@@ -113,6 +114,7 @@ export const login = async (req: Request, res: Response): Promise<any> => {
           email: user.email 
         },
         token,
+        redirectTo: '/' // Add redirect URL
       });
   } catch (err) {
     console.error('Login error:', err);

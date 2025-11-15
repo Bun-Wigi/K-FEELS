@@ -24,12 +24,20 @@ if (process.env.NODE_ENV !== "test") {
   if (!MONGO_URI) throw new Error("Missing MONGO_URI in .env");
 }
 
+// Enhanced CORS configuration for auth support
+app.use(cors({
+  origin: 'http://localhost:5173', // Specific origin instead of wildcard
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Set-Cookie']
+}));
+
 // Middleware
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Debug
+// Debug middleware
 app.use((req: Request, _res: Response, next: NextFunction) => {
   console.log(`${req.method} ${req.url}`);
   next();
@@ -56,7 +64,7 @@ connectDB();
 // API Routes
 app.use("/api", router);
 app.use("/api/auth", authRouter);
-app.use("/api/kdramas", kDramaRouter);
+app.use("/api/kdramas", kDramaRouter); // Keep the specific /kdramas prefix
 
 // Serve static files in production mode
 if (process.env.NODE_ENV === "production") {
@@ -91,6 +99,7 @@ if (process.env.NODE_ENV === "production") {
         "POST /api/auth/login",
         "POST /api/auth/logout",
         "GET /api/kdramas",
+        "GET /api/recommendations", // Add trending endpoint
       ],
     });
   });

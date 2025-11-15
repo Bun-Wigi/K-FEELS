@@ -1,100 +1,146 @@
-import { useLocation, Link } from "react-router-dom";
-import dramas from "../data/drama.json";
-import DramaGrid from "../components/DramaGrid";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setCurrentMood, addMoodToHistory } from "../features/moodSlice";
+import { setGenre } from "../features/genreSlice";
+import { calculateKDramaMood } from "../utils/kDramaMoodMapping";
+import ProgressBar from "../components/ProgressBar";
+import QuestionCard from "../components/QuestionCard";
+import { Question } from "../types";
 
-export default function Results() {
-  const characterImg: Record<string, string> = {
-    main: "/characters/main.jpg",
-    detective: "/characters/detective.jpg",
-    prince: "/characters/prince.jpg",
-    girlboss: "/characters/girlboss.jpg",
-    softie: "/characters/softie.jpg",
-    sidekick: "/characters/sidekick.jpg",
-    villian: "/characters/villain.jpg",
+import { questionsMood } from "../data/questions_mood"; // Use the .ts file we resolved earlier
+
+type QuizMode = "mood" | "trending" | "random"; // UPDATED: Changed "character" to "trending"
+
+export default function Quiz(): JSX.Element {
+  const { mode = "mood" } = useParams<{ mode: QuizMode }>();
+  
+  // Only mood mode uses questions now
+  const questions: Question[] = questionsMood;
+  
+  const [current, setCurrent] = useState<number>(0);
+  const [answers, setAnswers] = useState<string[]>([]);
+  const [isComplete, setIsComplete] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (answers.length === questions.length && !isComplete && mode === "mood") {
+      setIsComplete(true);
+      
+      try {
+        const result = calculateKDramaMood(answers);
+        
+        if (result && result.genreId) {
+          // Dispatch to Redux
+          dispatch(setCurrentMood(result.mood));
+          dispatch(addMoodToHistory(result.mood));
+          dispatch(setGenre({ genreId: result.genreId, mood: result.mood }));
+          
+          // Navigate to results
+          setTimeout(() => {
+            navigate("/results", { 
+              state: { 
+                mode: mode as QuizMode, 
+                tagFromAnsw: answers
+              } 
+            });
+          }, 500);
+          
+        } else {
+          console.error("❌ [QUIZ] Invalid result from calculation:", result);
+        }
+      } catch (error) {
+        console.error("💥 [QUIZ] Error in mood calculation:", error);
+      }
+    }
+  }, [answers, questions.length, isComplete, mode, dispatch, navigate]);
+
+  const handleAnswer = (tag: string): void => {
+    // Add answer to our state
+    const newAnswers = [...answers, tag];
+    setAnswers(newAnswers);
+
+    // Move to next question (if not the last one)
+    if (current < questions.length - 1) {
+      setCurrent(current + 1);
+    }
   };
 
-  const location = useLocation();
-  const state = location.state || {};
-  const { mode, tagFromAnsw = [], picks = [] } = state;
+  // Handle random mode - navigate directly to results
+  useEffect(() => {
+    if (mode === "random") {
+      navigate("/results", { 
+        state: { 
+          mode: "random"
+        } 
+      });
+    }
+  }, [mode, navigate]);
 
-  let list: typeof dramas = [];
-  let topTag: string | null = null;
+  // Handle trending mode - navigate directly to results (NO QUESTIONS)
+  useEffect(() => {
+    if (mode === "trending") { // UPDATED: Changed from "character" to "trending"
+      navigate("/results", { 
+        state: { 
+          mode: "trending"
+        } 
+      });
+    }
+  }, [mode, navigate]);
 
-  if (mode === "random") {
-    list = picks;
-  } else if (tagFromAnsw.length > 0) {
-    const counts = tagFromAnsw.reduce((acc: Record<string, number>, tag: string) => {
-      acc[tag] = (acc[tag] ?? 0) + 1;
-      return acc;
-    }, {});
+  // Safety checks for mood mode only
+  if (mode === "mood") {
+    if (!questions || questions.length === 0) {
+      return (
+        <div style={{ 
+          textAlign: 'center', 
+          marginTop: '100px',
+          padding: '20px'
+        }}>
+          <h2>❌ Error: No questions loaded</h2>
+          <p>Please try again or contact support.</p>
+        </div>
+      );
+    }
 
-    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-    topTag = sorted[0][0];
-    list = dramas.filter((oneDrama) => oneDrama.tags.includes(topTag));
+    if (current >= questions.length) {
+      return (
+        <div style={{ 
+          textAlign: 'center', 
+          marginTop: '100px',
+          padding: '20px'
+        }}>
+          <h2>✅ Quiz Complete!</h2>
+          <p>Processing your results...</p>
+        </div>
+      );
+    }
+
+    const question: Question = questions[current];
+
+    // Main quiz UI return - ONLY FOR MOOD MODE
+    return (
+      <div className="quiz-page">
+        <ProgressBar progress={(answers.length / questions.length) * 100} />
+        <QuestionCard 
+          question={question} 
+          index={current}
+          onAnswer={handleAnswer} 
+        />
+      </div>
+    );
   }
 
-  const charPicture = mode === "character" && topTag ? characterImg[topTag] : undefined;
-
-  // Sparkle state for button
-  const [sparkles, setSparkles] = useState<{ id: number; angle: number }[]>([]);
-
-  const triggerButtonSparkle = () => {
-    const s = Array.from({ length: 8 }).map((_, i) => ({
-      id: Date.now() + i,
-      angle: (i / 8) * 360,
-    }));
-    setSparkles(s);
-    setTimeout(() => setSparkles([]), 600);
-  };
-
+  // For trending and random modes, this component will redirect automatically
   return (
-    <div className="result-page" style={{ maxWidth: 960, margin: "0 auto", padding: 24, textAlign: "center" }}>
-      <h2 style={{ marginBottom: 20 }}>
-        {mode === "mood" && topTag
-          ? `Your mood today is: ${topTag.toUpperCase()}`
-          : mode === "character" && topTag
-            ? `Your character type is: ${topTag.toUpperCase()}`
-            : "Random pick"}
-      </h2>
-
-      {charPicture && (
-        <img
-          src={charPicture}
-          alt={topTag ?? "character"}
-          style={{
-            width: "250px",
-            height: "330px",
-            borderRadius: "12px",
-            objectFit: "cover",
-            boxShadow: "0 6px 16px rgba(0,0,0,0.2)",
-            marginBottom: "20px",
-          }}
-        />
-      )}
-
-      {list.length > 0 ? <DramaGrid dramas={list.slice(0, 6)} /> : <p>No matches. Try again.</p>}
-
-      {/* Back Home Button */}
-      <div style={{ marginTop: 30, display: "inline-block", position: "relative" }}>
-        <div className="sparkle-container">
-          {sparkles.map((s) => (
-            <div
-              key={s.id}
-              className="sparkle"
-              style={{ transform: `rotate(${s.angle}deg) translateY(-25px)` }}
-            />
-          ))}
-        </div>
-        <Link
-          to="/"
-          className="back-home"
-          onClick={triggerButtonSparkle}
-          style={{ position: "relative", zIndex: 1 }}
-        >
-          Back Home
-        </Link>
-      </div>
+    <div style={{ 
+      textAlign: 'center', 
+      marginTop: '100px',
+      padding: '20px'
+    }}>
+      <h2>Loading...</h2>
+      <p>Redirecting to your {mode} recommendations...</p>
     </div>
   );
 }
