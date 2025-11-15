@@ -40,8 +40,8 @@ export default function AnimatedCard({
     const newSparkles: Sparkle[] = Array.from({ length: 12 }).map((_, i) => ({
       id: Date.now() + i,
       angle: (i / 12) * 360,
-      driftX: Math.random() * 40 - 20, // random left/right drift
-      size: Math.random() * 6 + 6, // size between 6-12px
+      driftX: Math.random() * 120 - 60, // random left/right drift
+      size: Math.random() * 8 + 8, // size between 6-12px
       opacity: Math.random() * 0.6 + 0.4, // opacity between 0.4-1
     }));
 
