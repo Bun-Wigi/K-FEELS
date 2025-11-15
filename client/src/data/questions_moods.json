@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "text": "What's your comfort activity when life feels meh?",
+    "options": [
+      { "answer": "Stare out the window like in a K-drama", "tag": "romantic" },
+      { "answer": "Cry dramatically under a blanket", "tag": "melancholic" },
+      { "answer": "Eat ramen and pretend I'm the main character", "tag": "comedy" }
+    ]
+  },
+  {
+    "id": 2,
+    "text": "What's your current emotional weather forecast?",
+    "options": [
+      { "answer": "Sunny with a chance of romance", "tag": "romantic" },
+      { "answer": "Cloudy with 99% chance of overthinking", "tag": "melancholic" },
+      { "answer": "Tornado of chaos and caffeine", "tag": "comedy" }
+    ]
+  },
+  {
+    "id": 3,
+    "text": "Pick your ideal K-drama binge session:",
+    "options": [
+      { "answer": "Heart-fluttering romance that makes me believe in love", "tag": "romantic" },
+      { "answer": "Emotional rollercoaster that requires tissue boxes", "tag": "drama" },
+      { "answer": "Action-packed thriller that keeps me on edge", "tag": "action" }
+    ]
+  },
+  {
+    "id": 4,
+    "text": "Your perfect Friday night involves:",
+    "options": [
+      { "answer": "Cozy family dinner and wholesome stories", "tag": "family" },
+      { "answer": "Laughing until my sides hurt", "tag": "comedy" },
+      { "answer": "Solving mysteries and crime cases", "tag": "crime" }
+    ]
+  },
+  {
+    "id": 5,
+    "text": "What kind of story speaks to your soul?",
+    "options": [
+      { "answer": "Epic fantasy adventures in magical worlds", "tag": "fantasy" },
+      { "answer": "Deep, emotional human dramas", "tag": "drama" },
+      { "answer": "Light, fun romantic comedies", "tag": "romantic" }
+    ]
+  }
+]

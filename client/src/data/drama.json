@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "title": "Crash Landing on You",
+    "year": 2019,
+    "poster": "https://www.themoviedb.org/t/p/w1280/fgBNLPr6mC8pxuR79ENAJY4nBmj.jpg",
+    "rating": 9.0,
+    "tags": ["romantic", "adventurous, main"]
+  },
+  {
+    "id": 2,
+    "title": "Goblin (Guardian: The Lonely and Great God)",
+    "year": 2016,
+    "poster": "https://www.themoviedb.org/t/p/w1280/sPkxHNw5BFvuCFGWw825TS7n6X3.jpg",
+    "rating": 8.8,
+    "tags": ["romantic", "fantasy", "supernatural"]
+  },
+  {
+    "id": 3,
+    "title": "It's Okay to Not Be Okay",
+    "year": 2020,
+    "poster": "https://www.themoviedb.org/t/p/w1280/8XSJfLeImX8NszDUFnK1lbseCi8.jpg",
+    "rating": 9.1,
+    "tags": ["romantic", "MELANCHOLIC", "main"]
+  },
+  {
+    "id": 4,
+    "title": "King the Land",
+    "year": 2023,
+    "poster": "https://www.themoviedb.org/t/p/w1280/tW8BMRCYSe6nySvZ749pzc31x2m.jpg",
+    "rating": 8.6,
+    "tags": ["romantic", "funny", "villian"]
+  },
+  {
+    "id": 5,
+    "title": "Business Proposal",
+    "year": 2022,
+    "poster": "https://www.themoviedb.org/t/p/w1280/iLh7L8ZuvgdxFaM9sImyv2iKYLe.jpg",
+    "rating": 8.9,
+    "tags": ["romantic", "funny", "villian"]
+  },
+  {
+    "id": 6,
+    "title": "Descendants of the Sun",
+    "year": 2016,
+    "poster": "https://media.themoviedb.org/t/p/w600_and_h900_bestv2/s1zXuYyMMrgpet6BBrMqGlHnvc8.jpg",
+    "rating": 8.7,
+    "tags": ["romantic", "MELANCHOLIC, main"]
+  },
+  {
+    "id": 7,
+    "title": "Hometown Cha-Cha-Cha",
+    "year": 2021,
+    "poster": "https://media.themoviedb.org/t/p/w600_and_h900_bestv2/en6lrlJ1DhyvkeZEqrk3R6EJz1p.jpg",
+    "rating": 9.2,
+    "tags": ["romantic", "villian"]
+  },
+  {
+    "id": 8,
+    "title": "What's Wrong with Secretary Kim",
+    "year": 2018,
+    "poster": "https://www.themoviedb.org/t/p/w1280/w6muIYgrx1XZFombs3N8owfgLwf.jpg",
+    "rating": 8.5,
+    "tags": ["romantic", "funny"]
+  },
+  {
+    "id": 9,
+    "title": "Strong Woman Do Bong Soon",
+    "year": 2017,
+    "poster": "https://www.themoviedb.org/t/p/w1280/sPdS6oUdXfBNGKROE5RY5s5laqx.jpg",
+    "rating": 8.8,
+    "tags": ["romantic", "funny"]
+  },
+  {
+    "id": 10,
+    "title": "My Love From the Star",
+    "year": 2013,
+    "poster": "https://www.themoviedb.org/t/p/w1280/q0zmSFniW3ME3nOTuMxzw44fN1R.jpg",
+    "rating": 8.9,
+    "tags": ["romantic", "fantasy", "melancholic", "main"]
+  }
+]
