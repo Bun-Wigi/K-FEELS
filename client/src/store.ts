@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import moodReducer from './features/moodSlice';
 import genreReducer from './features/genreSlice';
-import kdramaReducer from './features/kdramaSlice';
+import kdramaReducer from './features/kDramaSlice';
 import authReducer from './features/authSlice';  // ← Add this
 
 export const store = configureStore({
