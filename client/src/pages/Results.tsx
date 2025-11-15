@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { AppDispatch, RootState } from "../store";
 import DramaGrid from "../components/DramaGrid";
 import { fetchRecommendations } from "../features/kDramaSlice";
@@ -14,6 +16,9 @@ export default function Results(): JSX.Element {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
+  // Sparkle state for hover (from HEAD version)
+  const [sparkles, setSparkles] = useState<{ id: number; angle: number }[]>([]);
+
   // Get genre from Redux
   const { currentGenreId, calculatedMood } = useSelector((state: RootState) => state.genre);
   const { recommendations, status, error } = useSelector((state: RootState) => state.kdrama);
@@ -21,10 +26,13 @@ export default function Results(): JSX.Element {
   useEffect(() => {
     if (state?.mode === "mood" && currentGenreId) {
       // Mood mode - use genre filter
-      dispatch(fetchRecommendations({ genreId: currentGenreId }));
+      dispatch(fetchRecommendations({ genreId: currentGenreId, mode: 'mood' }));
     } else if (state?.mode === "random") {
       // Random mode - no genre filter
-      dispatch(fetchRecommendations({ genreId: null as unknown as number }));
+      dispatch(fetchRecommendations({ genreId: null as unknown as number, mode: 'random' }));
+    } else if (state?.mode === "trending") { // NEW: Add trending support
+      // Trending mode - get trending Korean dramas
+      dispatch(fetchRecommendations({ genreId: null as unknown as number, mode: 'trending' }));
     }
   }, [currentGenreId, state?.mode, dispatch]);
 
@@ -47,11 +55,43 @@ export default function Results(): JSX.Element {
     setCurrentPage(pageNumber);
   };
 
+  // Sparkle trigger for back button (from HEAD version)
+  const triggerHoverSparkle = () => {
+    const s = Array.from({ length: 8 }).map((_, i) => ({
+      id: Date.now() + i,
+      angle: (i / 8) * 360,
+    }));
+    setSparkles(s);
+    setTimeout(() => setSparkles([]), 600);
+  };
+
+  // Function to get the appropriate heading
+  const getHeading = () => {
+    if (state?.mode === "mood") {
+      return {
+        title: `Perfect K-Dramas for your ${calculatedMood} mood! 🎭`,
+        emoji: "🎭"
+      };
+    } else if (state?.mode === "trending") { // NEW: Trending support
+      return {
+        title: "Trending K-Dramas Right Now! 🔥",
+        emoji: "🔥"
+      };
+    } else {
+      return {
+        title: "Random K-Drama Discoveries! 🎲",
+        emoji: "🎲"
+      };
+    }
+  };
+
+  const heading = getHeading();
+
   return (
     <div className="results-page" style={{ 
-      maxWidth: '1600px', // INCREASED from 1200px to 1600px for 6 cards
+      maxWidth: '1600px',
       margin: '0 auto', 
-      padding: '20px 40px', // INCREASED padding for wider layout
+      padding: '20px 40px',
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
@@ -73,26 +113,16 @@ export default function Results(): JSX.Element {
         
         {status === 'succeeded' && recommendations?.length > 0 && (
           <>
-            <div style={{ marginBottom: '20px', textAlign: 'center' }}>
-              {state?.mode === "mood" ? (
-                <h1 style={{ 
-                  fontSize: '28px',
-                  margin: '0 0 10px 0',
-                  color: '#333'
-                }}>
-                  Perfect K-Dramas for your {calculatedMood} mood! 🎭
-                </h1>
-              ) : (
-                <h1 style={{ 
-                  fontSize: '28px',
-                  margin: '0 0 10px 0',
-                  color: '#333'
-                }}>
-                  Random K-Drama Discoveries! 🎲
-                </h1>
-              )}
+            <div style={{ marginBottom: '15px', textAlign: 'center' }}>
+              <h1 style={{ 
+                fontSize: '26px',
+                margin: '0 0 8px 0',
+                color: '#333'
+              }}>
+                {heading.title}
+              </h1>
               <p style={{ 
-                fontSize: '14px',
+                fontSize: '13px',
                 color: '#666', 
                 margin: '0'
               }}>
@@ -100,10 +130,10 @@ export default function Results(): JSX.Element {
               </p>
             </div>
             
-            {/* Drama Grid - Shows 6 items with wider layout */}
+            {/* Drama Grid - Shows 6 items with tighter spacing */}
             <div style={{ 
               flex: '1',
-              marginBottom: '20px',
+              marginBottom: '10px',
               width: '100%'
             }}>
               <DramaGrid 
@@ -131,8 +161,12 @@ export default function Results(): JSX.Element {
                 justifyContent: 'center', 
                 alignItems: 'center', 
                 gap: '8px',
-                marginTop: '20px',
-                padding: '15px 0'
+                marginTop: '10px',
+                padding: '10px 0',
+                position: 'sticky',
+                bottom: '20px',
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                borderRadius: '8px'
               }}>
                 <button 
                   onClick={handlePrevPage} 
@@ -184,13 +218,56 @@ export default function Results(): JSX.Element {
                 </button>
               </div>
             )}
+
+            {/* Animated Back Home Button - Keep from HEAD */}
+            <div style={{ marginTop: 30, display: "flex", justifyContent: "center", position: "relative" }}>
+              {/* Sparkles overlay */}
+              <div className="sparkle-container">
+                {sparkles.map((s) => (
+                  <div
+                    key={s.id}
+                    className="sparkle"
+                    style={{ transform: `rotate(${s.angle}deg) translateY(-25px)` }}
+                  />
+                ))}
+              </div>
+
+              <motion.div
+                onMouseEnter={triggerHoverSparkle}
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.15 }}
+              >
+                <Link
+                  to="/"
+                  className="back-home"
+                  style={{
+                    display: "inline-block",
+                    padding: "0.8rem 1.8rem",
+                    fontSize: "1.1rem",
+                    fontWeight: 500,
+                    borderRadius: "14px",
+                    cursor: "pointer",
+                    background: "linear-gradient(135deg, #ffd1b3, #ffafcc)",
+                    color: "#fff",
+                    textDecoration: "none",
+                    textAlign: "center",
+                    boxShadow: "0 6px 18px rgba(255, 95, 155, 0.4)",
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                >
+                  Back Home
+                </Link>
+              </motion.div>
+            </div>
           </>
         )}
         
         {status === 'succeeded' && recommendations?.length === 0 && (
           <div style={{ textAlign: 'center', marginTop: '50px' }}>
             <h2>No recommendations found.</h2>
-            <p>Try the mood quiz or refresh for different random selections!</p>
+            <p>Try the mood quiz or refresh for different selections!</p>
           </div>
         )}
         

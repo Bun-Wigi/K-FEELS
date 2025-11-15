@@ -12,11 +12,12 @@ import authRouter from "./routes/authRoutes.js";
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5172;
-const MONGODB_URI = process.env.MONGODB_URI || 
+const MONGODB_URI =
+  process.env.MONGODB_URI ||
   "mongodb+srv://guesooul_db_user:0NYKzxnGMcYZWRHO@dramadb.e9dlbow.mongodb.net/?appName=DramaDB";
 
 app.use(cors({
@@ -49,13 +50,13 @@ app.use("/api/auth", authRouter);
 app.use("/api/kdramas", kDramaRouter);
 
 // Serve static files from React build (production mode)
-if (process.env.NODE_ENV === 'production') {
-  const clientBuildPath = path.join(__dirname, '../client/dist');
+if (process.env.NODE_ENV === "production") {
+  const clientBuildPath = path.join(__dirname, "../client/dist");
   app.use(express.static(clientBuildPath));
-  
+
   // Catch-all route for client-side routing (React Router)
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(clientBuildPath, 'index.html'));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(clientBuildPath, "index.html"));
   });
 } else {
   // Development mode - API only
@@ -63,7 +64,7 @@ if (process.env.NODE_ENV === 'production') {
     res.json({
       message: "K-FEELZ API Server is running",
       mode: "development",
-      note: "Run 'npm run dev' in /client for frontend with HMR"
+      note: "Run 'npm run dev' in /client for frontend with HMR",
     });
   });
 

@@ -8,15 +8,15 @@ import ProgressBar from "../components/ProgressBar";
 import QuestionCard from "../components/QuestionCard";
 import { Question } from "../types";
 
-import questionsMood from "../data/questions_moods.json";
-import questionsCharacter from "../data/questions_char.json";
+import { questionsMood } from "../data/questions_mood"; // Use the .ts file we resolved earlier
 
-type QuizMode = "mood" | "character" | "random";
+type QuizMode = "mood" | "trending" | "random"; // UPDATED: Changed "character" to "trending"
 
 export default function Quiz(): JSX.Element {
   const { mode = "mood" } = useParams<{ mode: QuizMode }>();
   
-  const questions: Question[] = mode === "character" ? questionsCharacter : questionsMood;
+  // Only mood mode uses questions now
+  const questions: Question[] = questionsMood;
   
   const [current, setCurrent] = useState<number>(0);
   const [answers, setAnswers] = useState<string[]>([]);
@@ -78,42 +78,69 @@ export default function Quiz(): JSX.Element {
     }
   }, [mode, navigate]);
 
-  // Safety checks
-  if (!questions || questions.length === 0) {
+  // Handle trending mode - navigate directly to results (NO QUESTIONS)
+  useEffect(() => {
+    if (mode === "trending") { // UPDATED: Changed from "character" to "trending"
+      navigate("/results", { 
+        state: { 
+          mode: "trending"
+        } 
+      });
+    }
+  }, [mode, navigate]);
+
+  // Safety checks for mood mode only
+  if (mode === "mood") {
+    if (!questions || questions.length === 0) {
+      return (
+        <div style={{ 
+          textAlign: 'center', 
+          marginTop: '100px',
+          padding: '20px'
+        }}>
+          <h2>❌ Error: No questions loaded</h2>
+          <p>Please try again or contact support.</p>
+        </div>
+      );
+    }
+
+    if (current >= questions.length) {
+      return (
+        <div style={{ 
+          textAlign: 'center', 
+          marginTop: '100px',
+          padding: '20px'
+        }}>
+          <h2>✅ Quiz Complete!</h2>
+          <p>Processing your results...</p>
+        </div>
+      );
+    }
+
+    const question: Question = questions[current];
+
+    // Main quiz UI return - ONLY FOR MOOD MODE
     return (
-      <div style={{ 
-        textAlign: 'center', 
-        marginTop: '100px',
-        padding: '20px'
-      }}>
-        <h2>❌ Error: No questions loaded</h2>
-        <p>Please try again or contact support.</p>
+      <div className="quiz-page">
+        <ProgressBar progress={(answers.length / questions.length) * 100} />
+        <QuestionCard 
+          question={question} 
+          index={current}
+          onAnswer={handleAnswer} 
+        />
       </div>
     );
   }
 
-  if (current >= questions.length) {
-    return (
-      <div style={{ 
-        textAlign: 'center', 
-        marginTop: '100px',
-        padding: '20px'
-      }}>
-        <h2>✨ Quiz Complete!</h2>
-        <p>Processing your results...</p>
-      </div>
-    );
-  }
-
-  const question: Question = questions[current];
-
-  // Main quiz UI return - REMOVED ALL DEBUG INFO
+  // For trending and random modes, this component will redirect automatically
   return (
-    <div className="quiz-page">
-      <ProgressBar progress={(answers.length / questions.length) * 100} />
-      <QuestionCard {...({ question, onAnswer: handleAnswer } as any)} />
-      
-      {/* REMOVED THE DEBUG SECTION ENTIRELY */}
+    <div style={{ 
+      textAlign: 'center', 
+      marginTop: '100px',
+      padding: '20px'
+    }}>
+      <h2>Loading...</h2>
+      <p>Redirecting to your {mode} recommendations...</p>
     </div>
   );
 }

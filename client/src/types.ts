@@ -54,3 +54,13 @@ export interface RootState {
     user: any;
   };
 }
+
+export interface CharImage {
+  main: String,
+  detective: String, 
+  prince: String, 
+  girlboss: String, 
+  sidekick: String, 
+  villian: String,
+  softie: String,
+}
