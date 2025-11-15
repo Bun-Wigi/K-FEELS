@@ -1,41 +1,41 @@
-//component line for progress
+import { motion } from "framer-motion";
 
 interface Props {
-  //for progress from 0 to 1
-  progress: number;
+  progress: number; // 0 → 1
 }
 
 export default function ProgressBar({ progress }: Props) {
-  // for saving frame
   const clamped = Math.max(0, Math.min(1, progress));
-  //convert into percentage
   const pct = Math.round(clamped * 100);
 
   return (
     <div
+      role="progressbar"
       aria-label="progress"
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={pct}
-      role="progressbar"
       style={{
-        height: 10,
         width: "100%",
-        background: "rgba(255,255,255,0.5)",
-        borderRadius: 999,
+        height: 16,
+        borderRadius: 12,
+        background: "rgba(255, 241, 245, 0.5)",
+        boxShadow: "inset 0 3px 8px rgba(0,0,0,0.05)",
         overflow: "hidden",
-        boxShadow: "inset 0 2px 6px rgba(0,0,0,0.08)",
-        margin: "12px 0 24px",
+        margin: "16px 0 24px",
+        position: "relative",
       }}
     >
-      {/* inmer part that visually represent progress*/}
-      <div
+      {/* glowing progress bar */}
+      <motion.div
+        initial={{ width: 0 }}
+        animate={{ width: `${pct}%` }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
         style={{
           height: "100%",
-          width: `${pct}%`,
-          background:
-            "linear-gradient(90deg, #eca2b0ff 0%, #e76d86ff 60%, #cd517aff 100%)",
-          transition: "width 0.3s ease",
+          borderRadius: 12,
+          background: "linear-gradient(135deg, #ffd1b3, #ffafcc)",
+          boxShadow: "0 6px 20px rgba(255, 95, 155, 0.6)",
         }}
       />
     </div>

@@ -2,8 +2,16 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export interface AnimatedOption {
-  label: string; // text on the bottom
-  value: string; //tag
+  label: string; // text on the button
+  value: string; // tag
+}
+
+interface Sparkle {
+  id: number;
+  angle: number;
+  driftX: number;
+  size: number;
+  opacity: number;
 }
 
 interface AnimatedCardProps {
@@ -19,36 +27,33 @@ export default function AnimatedCard({
   options,
   onSelect,
 }: AnimatedCardProps) {
-  //state for sparkle burst
-  const [sparkles, setSparkles] = useState<{ id: number; angle: number }[]>([]);
-  //state foir expansion animation
+  const [sparkles, setSparkles] = useState<Sparkle[]>([]);
   const [expanded, setExpanded] = useState(false);
 
-  //animation presets for when card appears/disappears
   const cardVariants = {
     initial: { scale: 0.9, opacity: 0, y: 40 },
     animate: { scale: 1, opacity: 1, y: 0, transition: { duration: 0.4 } },
     exit: { scale: 0.8, opacity: 0, y: -40, transition: { duration: 0.3 } },
   };
 
-  //sparkle burst + cars pop when user clicks
   const triggerBurst = () => {
-    const s = Array.from({ length: 12 }).map((_, i) => ({
+    const newSparkles: Sparkle[] = Array.from({ length: 12 }).map((_, i) => ({
       id: Date.now() + i,
-      angle: (i / 12) * 360, //evenly distributed around circle
+      angle: (i / 12) * 360,
+      driftX: Math.random() * 120 - 60, // random left/right drift
+      size: Math.random() * 8 + 8, // size between 6-12px
+      opacity: Math.random() * 0.6 + 0.4, // opacity between 0.4-1
     }));
-    setSparkles(s);
-    //clear sparkles after 1 sec
+
+    setSparkles(newSparkles);
+
     setTimeout(() => setSparkles([]), 1000);
-    //expand card briefly
     setExpanded(true);
     setTimeout(() => setExpanded(false), 250);
   };
 
-  //handle user selection
   const handleSelect = (value: string) => {
     triggerBurst();
-    //delay advancing to next card slightly to sync with animation
     setTimeout(() => onSelect(value), 250);
   };
 
@@ -62,13 +67,18 @@ export default function AnimatedCard({
         animate="animate"
         exit="exit"
       >
-        {/* Sparkles overlay*/}
+        {/* SPARKLES */}
         <div className="sparkle-container">
           {sparkles.map((s) => (
             <div
               key={s.id}
               className="sparkle"
-              style={{ transform: `rotate(${s.angle}deg) translateY(-80px)` }}
+              style={{
+                width: s.size,
+                height: s.size,
+                opacity: s.opacity,
+                "--drift": `${s.driftX}px`,
+              } as React.CSSProperties}
             />
           ))}
         </div>
