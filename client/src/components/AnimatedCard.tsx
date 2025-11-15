@@ -79,7 +79,7 @@ export default function AnimatedCard({
                 opacity: s.opacity,
                 "--drift": `${s.driftX}px`,
               } as React.CSSProperties}
-          
+            />
           ))}
         </div>
 
